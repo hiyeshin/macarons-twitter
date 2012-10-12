@@ -1,7 +1,6 @@
 /////////////////////////////////////////////
-////////////Shining Earth///////////////////
-//////////////////////////////////////////
-
+////////////Shining Earth////////////////////
+/////////////////////////////////////////////
 
 $( document ).ready( function(){
 	
@@ -11,8 +10,7 @@ $( document ).ready( function(){
 
 	window.group = new THREE.Object3D()
 
-	//  useful resource: http://www.celestiamotherlode.net/catalog/earth.php
-
+	//Let's draw earth
 	window.earthRadius = 90
 	window.earth = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius, 32, 32 ),
@@ -25,7 +23,7 @@ $( document ).ready( function(){
 	earth.castShadow = true
 	group.add( earth )
 
-
+	//LEt's draw moon
 	window.moonRadius = 30;
 	window.moon = new THREE.Mesh(
 		new THREE.SphereGeometry (moonRadius, 100, 100),
@@ -33,14 +31,15 @@ $( document ).ready( function(){
 			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
 		})
 	)
-	moon.position.set(200,200,0)
+
+
+	var moonX = 200, moonY = 200, moonZ = 0;
+	moon.position.set(moonX,moonY,moonZ)
 	moon.receiveShadow = true;
 	moon.castShadow = true;
-	group.add( moon );
-
-
-
-	//	http://mrdoob.github.com/three.js/examples/webgl_materials_blending_custom.html
+	// group.add( moon );
+	// http://mrdoob.github.com/three.js/examples/webgl_materials_blending_custom.html
+	//
 
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
@@ -59,28 +58,23 @@ $( document ).ready( function(){
 	group.add( clouds )
 
 
+	group.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
+	group.add( dropPinhead( 37.542672, 127.027308, 0x8edf9f))
 
-	group.add( dropPin( 37.542672, 127.027308, 0xFF0000)) //  Red is Han River, Seoul, South Korea
-	group.add( dropPinhead( 37.542672, 127.027308, 0xFF0000))
+	group.add( dropPin( 13.4125, 103.866667, 0xd4b698)) //Beige is for Angkore Wat, Cambodia	
+	group.add( dropPinhead( 13.4125, 103.866667, 0xd4b698 ))
 
-	group.add( dropPin( 13.4125, 103.866667, 0x00FF00 )) //Green is for Angkore Wat, Cambodia	
-	group.add( dropPinhead( 13.4125, 103.866667, 0x00FF00 ))
+	group.add( dropPin( 48.872224,2.303339, 0xeab8fa )) //Purple is for Laduree, Paris, France
+	group.add( dropPinhead( 48.872224,2.303339, 0xeab8fa ))
 
-	group.add( dropPin( 48.872224,2.303339, 0xFF00FF )) //Purple is for Laduree, Paris, France
-	group.add( dropPinhead( 48.872224,2.303339, 0xFF00FF ))
+	group.add( dropPin( 22.296372, 114.172469, 0xffffbf)) //yellow is Chungking mansion, Hong kong
+	group.add( dropPinhead( 22.296372, 114.172469, 0xffffbf ))
 
-	group.add( dropPin( 22.296372, 114.172469, 0xFFFF00 )) //yellow is Chungking mansion, Hong kong
-	group.add( dropPinhead( 22.296372, 114.172469, 0xFFFF00 ))
-
-	group.add( dropPin( 42.640278, 18.108333, 0x00CCFF))//Blue is Dubrovnik, Croatia
-	group.add( dropPinhead( 42.640278, 18.108333, 0x00CCFF))
-
-
-
-
-
+	group.add( dropPin( 42.640278, 18.108333, 0x8df5ec))//Blue is Dubrovnik, Croatia
+	group.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
 
 	scene.add( group );
+	scene.add( moon );
 
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
@@ -88,6 +82,8 @@ $( document ).ready( function(){
 	group.rotation.y = ( -40 ).degreesToRadians()
 	group.rotation.z = (  23 ).degreesToRadians()
 
+	moon.rotation.y = ( 90 ).degreesToRadians()
+	moon.rotation.z = (  45 ).degreesToRadians()
 
 	loop()	
 })
@@ -102,6 +98,29 @@ function loop(){
 
 	group.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
+	//moon.rotation.y  += ( 0.50 ).degreesToRadians()
+
+
+	while (moon.position.x > -200 ){
+		moon.position.x -= 1;
+	} 
+
+	if (moon.position)
+
+
+
+
+	sqithc2``````````````````````````````````````````````````````````````````````````````````````
+/*
+	if (moon.position.x > 100){
+		moon.position.x -=1
+	}
+
+	if (moon.position.x < -100){
+		moon.position.x += 1
+	}
+	*/
+
 
 	render()
 	controls.update()
@@ -120,7 +139,7 @@ function dropPin( latitude, longitude, color ){
 	marker = new THREE.Mesh(
 		new THREE.CubeGeometry( 2, markerLength, 2 ),
 		new THREE.MeshBasicMaterial({ 
-			color: color
+			color: color, wireframe: true, side: THREE.DoubleSide
 		})
 	)	
 
@@ -146,14 +165,13 @@ function dropPinhead( latitude, longitude, color ){
 	group4 = new THREE.Object3D(),
 
 	pinhead = new THREE.Mesh(
-		new THREE.SphereGeometry(10,10,10),
-		new THREE.MeshBasicMaterial({
-			color:color
-		})
+		new THREE.SphereGeometry(8,8,8),
+		new THREE.MeshLambertMaterial( { 
+		color: color, shading: THREE.SmoothShading, overdraw: true } )
 	)
 
 	
-	pinhead.position.y = earthRadius + 30;
+	pinhead.position.y = earthRadius + 24;
 
 	group3.add( pinhead )
 	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
@@ -162,65 +180,8 @@ function dropPinhead( latitude, longitude, color ){
 	group4.add( group3 )
 	group4.rotation.y = ( 90 + longitude ).degreesToRadians()
 
-	return group4
+	return group4;
 }
-
-
-/*
-function stars() = {
-	//var group3 = new THREE.Object3D();
-
-	var particleCount = 100,
-	particles = new THREE.Geometry(),
-	pMaterial = new THREE.ParticleBasicMaterial({color: 0xFFFFFF, size: 20});
-
-	for (var p=0; p<particleCount; p++){
-		var pX = Math.random()*500 -250,
-			pY = Math.random()*500-250,
-			pZ = Math.random()*500-250,
-			particle = new THREE.Vertex(new THREE.Vector3(pX, pY, pZ));
-
-		particles.vertices.push(particle); 
-	}
-
-	var particleSystem = new THREE.ParticleSystem(particles, pMaterial);
-
-	scene.addChild(particleSystem);
-
-	//return group3;
-}
-*/
-
-
-/*
-
-function texts(latitude, longitude, textText){
-	var materialFront = new THREE.MeshBasicMaterial({color: 0xFF0000}),
-		materialSide = new THREE.MeshBasicMaterial({color: 0x000088}),
-		materialArray = [materialFront, materialSide];
-		
-	
-	var textGeom = new THREE.TextGeometry("Seoul",{
-		size: 30, height: 4, curveSegments: 3, font: "droid_sans", weight: "normal",
-		bevelThickness: 1, bevelSize:2, bevelEnabled: true,
-		material:0, extrudeMaterial:1
-	});
-
-	textGeom.materials = [materialFront, materialSide];
-	var meshMaterial = new THREE.MeshBasicMaterial({color: 0xCC0000}),
-		textMesh = new THREE.Mesh(textGeom, new THREE.MeshFaceMaterial() );
-
-	textGeom.computeBoundingBox();
-
-	var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x ;
-
-	textMesh.position.set( -0.5 * textWidth, 50, 100);
-	textMesh.rotation.x = -Math.PI / 4;
-	scene.add (textMesh);
-}
-*/
-
-
 
 //  Why separate this simple line of code from the loop() function?
 //  So that our controls can also call it separately.
@@ -246,7 +207,7 @@ function surfacePlot( params ){
 	y = params.center.y + params.latitude.cosine() * params.longitude.sine()   * params.radius,
 	z = params.center.z + params.latitude.sine()   * params.radius
 
-	return new THREE.Vector3( x, y, z )
+	return new THREE.Vector3( x, y, z );
 }
 
 function setupThree(){
@@ -286,8 +247,6 @@ function setupThree(){
 }
 
 
-
-
 function addControls(){
 
 	window.controls = new THREE.TrackballControls( camera )
@@ -306,14 +265,12 @@ function addControls(){
 }
 
 
-
 function addLights(){
 	
 	var
 	ambient,
 	directional
-	
-	
+		
 	//  Let's create an Ambient light so that even the dark side of the 
 	//  earth will be a bit visible. 
 	
@@ -326,7 +283,6 @@ function addLights(){
 	directional = new THREE.DirectionalLight( 0xCCCCCC )
 	directional.castShadow = true;
 	scene.add( directional );
-
 
 	directional.position.set( 100, 200, 300 )
 	directional.target.position.copy( scene.position )
@@ -341,6 +297,5 @@ function addLights(){
 	directional.shadowMapWidth      = directional.shadowMapHeight = 2048
 	//directional.shadowCameraVisible = true
 }
-
 
 
