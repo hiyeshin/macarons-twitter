@@ -23,7 +23,11 @@ $( document ).ready( function(){
 	earth.castShadow = true
 	group.add( earth )
 
-	//LEt's draw moon
+
+	window.moonGroup = new THREE.Object3D()
+	moonGroup.rotation.x = ( 20 ).degreesToRadians()
+
+	//Let's draw moon
 	window.moonRadius = 30;
 	window.moon = new THREE.Mesh(
 		new THREE.SphereGeometry (moonRadius, 100, 100),
@@ -31,16 +35,12 @@ $( document ).ready( function(){
 			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
 		})
 	)
-
-
-	var moonX = 200, moonY = 200, moonZ = 0;
-	moon.position.set(moonX,moonY,moonZ)
+	var moonX = 200, moonY = 0, moonZ = 0;
+	moon.position.set(moonX, moonY, moonZ)
 	moon.receiveShadow = true;
 	moon.castShadow = true;
-	// group.add( moon );
-	// http://mrdoob.github.com/three.js/examples/webgl_materials_blending_custom.html
-	//
 
+	//clouds
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
@@ -57,7 +57,36 @@ $( document ).ready( function(){
 	clouds.castShadow = true
 	group.add( clouds )
 
+	/////////////////////////////////////////////////////
+	//////////////particle experiments////////////////////////
+	///////////////////////////////////////////////////
+	//var particleCount = 180;
+/*	
+	window.particleSystem = new THREE.ParticleSystem(
+    	new THREE.Geometry(),
+    	new THREE.ParticleBasicMaterial({
+        	color: 0xFFFFFF,
+        	size: 5
+    	  })
+    	)
+    
+     
+	// now create the individual particles
+	for(var p = 0; p < 180; p++) {
+ 
+ 	 	var pX = Math.random() * 500 - 250,
+    	  	pY = Math.random() * 500 - 250,
+      		pZ = Math.random() * 500 - 250,
+      		particle = new THREE.Vertex(
+      	  new THREE.Vector3(pX, pY, pZ)
+      	);
+  		particleSystem.geometry.vertices.push(particle);
+	}
+	
 
+
+	scene.add(particleSystem);
+*/
 	group.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
 	group.add( dropPinhead( 37.542672, 127.027308, 0x8edf9f))
 
@@ -74,7 +103,9 @@ $( document ).ready( function(){
 	group.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
 
 	scene.add( group );
-	scene.add( moon );
+	
+	scene.add( moonGroup );
+	moonGroup.add( moon );
 
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
@@ -98,28 +129,14 @@ function loop(){
 
 	group.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	//moon.rotation.y  += ( 0.50 ).degreesToRadians()
+	/*moon.rotation.y  += ( 0.50 ).degreesToRadians()
 
-
-	while (moon.position.x > -200 ){
-		moon.position.x -= 1;
-	} 
-
-	if (moon.position)
-
-
-
-
-	sqithc2``````````````````````````````````````````````````````````````````````````````````````
-/*
-	if (moon.position.x > 100){
-		moon.position.x -=1
-	}
-
-	if (moon.position.x < -100){
-		moon.position.x += 1
-	}
+	moon.position.x += 0.3; 
+	moon.position.z -= 0.3;
 	*/
+	moonGroup.rotation.y += ( 2 ).degreesToRadians()
+
+
 
 
 	render()
@@ -187,7 +204,6 @@ function dropPinhead( latitude, longitude, color ){
 //  So that our controls can also call it separately.
 
 function render(){
-
 	renderer.render( scene, camera )
 }
 
@@ -213,6 +229,7 @@ function surfacePlot( params ){
 function setupThree(){
 	
 	window.scene = new THREE.Scene();
+	//window.scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
 	
 	var
 	WIDTH      = 600,
@@ -227,9 +244,6 @@ function setupThree(){
 	camera.lookAt( scene.position )
 	scene.add( camera )
 
-	//  Finally, create a Renderer to render the Scene we're looking at.
-	//  A renderer paints our Scene onto an HTML5 Canvas from the perspective 
-	//  of our Camera.
 	
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
 	//window.renderer = new THREE.CanvasRenderer({ antialias: true })
