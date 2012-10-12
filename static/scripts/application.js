@@ -8,6 +8,7 @@ $( document ).ready( function(){
 	addLights();
 	addControls();
 
+////this is earth group!
 	window.group = new THREE.Object3D()
 
 	//Let's draw earth
@@ -23,22 +24,6 @@ $( document ).ready( function(){
 	earth.castShadow = true
 	group.add( earth )
 
-
-	window.moonGroup = new THREE.Object3D()
-	moonGroup.rotation.x = ( 20 ).degreesToRadians()
-
-	//Let's draw moon
-	window.moonRadius = 30;
-	window.moon = new THREE.Mesh(
-		new THREE.SphereGeometry (moonRadius, 100, 100),
-		new THREE.MeshLambertMaterial ({
-			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
-		})
-	)
-	var moonX = 200, moonY = 0, moonZ = 0;
-	moon.position.set(moonX, moonY, moonZ)
-	moon.receiveShadow = true;
-	moon.castShadow = true;
 
 	//clouds
 	window.clouds = new THREE.Mesh(
@@ -56,6 +41,38 @@ $( document ).ready( function(){
 	clouds.receiveShadow = true
 	clouds.castShadow = true
 	group.add( clouds )
+
+
+ ////this is Moon Group!!!
+	window.moonGroup = new THREE.Object3D()
+	moonGroup.rotation.x = ( 20 ).degreesToRadians()
+
+	//Let's draw moon
+	window.moonRadius = 30;
+	window.moon = new THREE.Mesh(
+		new THREE.SphereGeometry (moonRadius, 100, 100),
+		new THREE.MeshLambertMaterial ({
+			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
+		})
+	)
+	var moonX = 200, moonY = 0, moonZ = 0;
+	moon.position.set(moonX, moonY, moonZ)
+	moon.receiveShadow = true;
+	moon.castShadow = true;
+
+
+	window.moonSatelliteRadius = 8 ; 
+	window.moonSatellite = new THREE.Mesh(
+		new THREE.SphereGeometry (moonSatelliteRadius, 8, 8),
+		new THREE.MeshBasicMaterial({ 
+			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+		})
+	) 
+	moonSatellite.position.set (moonX + 130, moonY, moonZ);
+	moonSatellite.receiveShadow = true;
+	moonSatellite.castShadow = true;
+
+	moonGroup.add (moonSatellite);
 
 	/////////////////////////////////////////////////////
 	//////////////particle experiments////////////////////////
