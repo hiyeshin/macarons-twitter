@@ -25,6 +25,21 @@ $( document ).ready( function(){
 	earth.castShadow = true
 	group.add( earth )
 
+
+	window.moonRadius = 30;
+	window.moon = new THREE.Mesh(
+		new THREE.SphereGeometry (moonRadius, 100, 100),
+		new THREE.MeshLambertMaterial ({
+			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
+		})
+	)
+	moon.position.set(200,200,0)
+	moon.receiveShadow = true;
+	moon.castShadow = true;
+	group.add( moon );
+
+
+
 	//	http://mrdoob.github.com/three.js/examples/webgl_materials_blending_custom.html
 
 	window.clouds = new THREE.Mesh(
@@ -43,30 +58,27 @@ $( document ).ready( function(){
 	clouds.castShadow = true
 	group.add( clouds )
 
-/*
-	window.particleSystem = new THREE.ParticleSystem(
-		new THREE.Geometry (),
-		new THREE.ParticleBasicMaterial({
-			color: 0xFFFFFF,
-			map: ,
-			size: 20,
-			sizeAttenuation: ,
-			vertexColors: true,
-			fog: true;
-		})
-
-
-		)
-	*/
 
 
 	group.add( dropPin( 37.542672, 127.027308, 0xFF0000)) //  Red is Han River, Seoul, South Korea
 	group.add( dropPinhead( 37.542672, 127.027308, 0xFF0000))
 
 	group.add( dropPin( 13.4125, 103.866667, 0x00FF00 )) //Green is for Angkore Wat, Cambodia	
+	group.add( dropPinhead( 13.4125, 103.866667, 0x00FF00 ))
+
 	group.add( dropPin( 48.872224,2.303339, 0xFF00FF )) //Purple is for Laduree, Paris, France
+	group.add( dropPinhead( 48.872224,2.303339, 0xFF00FF ))
+
 	group.add( dropPin( 22.296372, 114.172469, 0xFFFF00 )) //yellow is Chungking mansion, Hong kong
+	group.add( dropPinhead( 22.296372, 114.172469, 0xFFFF00 ))
+
 	group.add( dropPin( 42.640278, 18.108333, 0x00CCFF))//Blue is Dubrovnik, Croatia
+	group.add( dropPinhead( 42.640278, 18.108333, 0x00CCFF))
+
+
+
+
+
 
 	scene.add( group );
 
@@ -98,6 +110,7 @@ function loop(){
 }
 
 
+//Let's drop the pins!
 function dropPin( latitude, longitude, color ){
 
 	var 
@@ -124,6 +137,8 @@ function dropPin( latitude, longitude, color ){
 	return group2
 }
 
+
+//Let's make some pinhead
 function dropPinhead( latitude, longitude, color ){
 
 	var 
@@ -138,7 +153,7 @@ function dropPinhead( latitude, longitude, color ){
 	)
 
 	
-	pinhead.position.y = earthRadius + 90;
+	pinhead.position.y = earthRadius + 30;
 
 	group3.add( pinhead )
 	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
