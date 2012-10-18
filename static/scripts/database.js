@@ -133,4 +133,4 @@ database = database.concat([
 		latitude:  -27.0080354,
 		longitude: -51.152297799999985
 	}
-]);
+])

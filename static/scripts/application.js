@@ -17,12 +17,12 @@ $( document ).ready( function(){
 //Like always, we attach this to the window so that we can always access to this function
 //not limited to the function scope.
 
-//	window.geocoder = new google.mapsGeocoder();
+	window.geocoder = new google.maps.Geocoder();
 
-//	window.tweets = [];
-//	window.tweetsIndex = -1; //what does it mean?
-//	window.timePerTweet(3).seconds(); // what does it mean?
-//	window.tweetApiAmred = false ; //if it's FALSE, we will only play with data.js file.
+	window.tweets = [];
+	window.tweetsIndex = -1; //what does it mean?
+	window.timePerTweet = (3).seconds(); // what does it mean?
+	window.tweetApiArmed = false ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
 ////We are creating group to manipulate them more easily
@@ -42,11 +42,12 @@ $( document ).ready( function(){
 	earth.position.set( 0, 0, 0 )
 	earth.receiveShadow = true;
 	earth.castShadow = true;
-	//group.add( earth );
 	earthGroup.add (earth);
 
 
 	//Let's add clouds to the earth group
+	//We are giving some transparency so earth is visible through the clouds
+	//Blender mode is used for this effect
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
@@ -57,6 +58,8 @@ $( document ).ready( function(){
 			blendDst: THREE.SrcColorFactor,
 			blendEquation: THREE.AddEquation
 		})
+		//extra MeshLamnertMaterial parameters:
+		//color, opacity, lightMap, reflectivity(float), wireframe, 
 	)
 	clouds.position.set( 0, 0, 0 )
 	clouds.receiveShadow = true
@@ -124,31 +127,32 @@ $( document ).ready( function(){
 
 	scene.add(particleSystem);
 */
-	group.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
-	group.add( dropPinhead( 37.542672, 127.027308, 0x8edf9f))
 
-	group.add( dropPin( 13.4125, 103.866667, 0xd4b698)) //Beige is for Angkore Wat, Cambodia	
-	group.add( dropPinhead( 13.4125, 103.866667, 0xd4b698 ))
+/*
+	earthGroup.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
+	earthGroup.add( dropPinhead( 37.542672, 127.027308, 0x8edf9f))
 
-	group.add( dropPin( 48.872224,2.303339, 0xeab8fa )) //Purple is for Laduree, Paris, France
-	group.add( dropPinhead( 48.872224,2.303339, 0xeab8fa ))
+	earthGroup.add( dropPin( 13.4125, 103.866667, 0xd4b698)) //Beige is for Angkore Wat, Cambodia	
+	earthGroup.add( dropPinhead( 13.4125, 103.866667, 0xd4b698 ))
 
-	group.add( dropPin( 22.296372, 114.172469, 0xffffbf)) //yellow is Chungking mansion, Hong kong
-	group.add( dropPinhead( 22.296372, 114.172469, 0xffffbf ))
+	earthGroup.add( dropPin( 48.872224,2.303339, 0xeab8fa )) //Purple is for Laduree, Paris, France
+	earthGroup.add( dropPinhead( 48.872224,2.303339, 0xeab8fa ))
 
-	group.add( dropPin( 42.640278, 18.108333, 0x8df5ec))//Blue is Dubrovnik, Croatia
-	group.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
+	earthGroup.add( dropPin( 22.296372, 114.172469, 0xffffbf)) //yellow is Chungking mansion, Hong kong
+	earthGroup.add( dropPinhead( 22.296372, 114.172469, 0xffffbf ))
 
-	scene.add( group );
-	
+	earthGroup.add( dropPin( 42.640278, 18.108333, 0x8df5ec))//Blue is Dubrovnik, Croatia
+	earthGroup.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
+*/
+	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
 
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
 
-	group.rotation.y = ( -40 ).degreesToRadians()
-	group.rotation.z = (  23 ).degreesToRadians()
+	earthGroup.rotation.y = ( -40 ).degreesToRadians()
+	earthGroup.rotation.z = (  23 ).degreesToRadians()
 
 	moon.rotation.y = ( 90 ).degreesToRadians()
 	moon.rotation.z = (  45 ).degreesToRadians()
@@ -158,36 +162,222 @@ $( document ).ready( function(){
 	moonSatellite.rotation.z = (  45 ).degreesToRadians()
 
 
-	loop()	
+	loop();
+
+	//now is time for TWEETING!
+	if ( tweetApiArmed ) fetchTweets();
+	else {
+		console.log( "This is not a real-time. Now we are processing data from database file. ");
+		console.log ( "If we want real time data, we have to change TWEETAPIARMED variable");
+		importTweets();
+	}
+	nextTweet();
 })
 
+///////////////////////////////////////////
+//this is the function for real-time data// 
+function fetchTweets(){
 
 
+	//  Here we’re going to use jQuery ($) to make an Ajax call to the simple
+	//  version of Twitter’s API. Why the simple version? Because the simple
+	//  version doesn’t require you to setup authorization, etc.
+	//  Beware, this API version is deprecated so enjoy it while it lasts!
+
+	//  Read more on Twitter’s API page:
+	//  https://dev.twitter.com/docs/api/1
+
+	//  WARNING: With this API you are only allowed 150 requests per hour!!
+	//  This is tracked by IP address, so be wary of testing on NYU’s network.
+	//  You can check your rate limit status at anytime by pinging this
+	//  address, most easily done by just visiting it in your browser:
+	//  https://api.twitter.com/1/account/rate_limit_status.json
+
+	console.log( '\n\nFetching fresh tweets from Twitter.' )
+	$.ajax({
+
+		url: 'http://search.twitter.com/search.json?geocode=0,0,6400km',
+
+
+		//  We have to use the datatype 'JSONp' (JavaScript Object Notation with
+		//  Padding) in order to safely fetch data that’s not coming from our own
+		//  domain name. (Basically, side-stepping a browser security issue.)
+
+		dataType: 'jsonp',
+		success: function( data ){
+
+			console.log( 'Received the following data from Twitter:' )
+			console.log( data )
+
+
+			//  If you check the console we’ve just ouput the Twitter data,
+			//  and the tweets themselves are stored in the data.results[]
+			//  array which we will loop through now:
+
+			data.results.forEach( function( tweet, i ){
+				
+				console.log( '\nInspecting tweet #'+ (i+1) +' of '+ data.results.length +'.' )
+				if( tweet.geo && 
+					tweet.geo.coordinates && 
+					tweet.geo.coordinates.type === 'Point' ){
+					
+					console.log( 'YES! Twitter had the latitude and longitude:' )
+					console.log( tweet.geo )
+					tweets.push({
+
+						latitude:  tweet.geo.coordinates[ 0 ],
+						longitude: tweet.geo.coordinates[ 1 ]
+					})
+				}
+				else if( tweet.location ){
+					
+					console.log( 'Ok. Only found a location name, will try Google Maps for:' )
+					console.log( tweet.location )
+					setTimeout( function(){
+						locateWithGoogleMaps( tweet.location )
+					}, i * timePerTweet.divide(2).round() )
+				}
+				else if( tweet.iso_language_code ){
+					
+					console.log( 'Not good: Resorting to the ISO language code as last hope:' )
+					console.log( tweet.iso_language_code )
+					setTimeout( function(){
+						locateWithGoogleMaps( tweet.iso_language_code )
+					}, i * timePerTweet.divide(2).round() )
+				}
+				else {
+
+					console.log( 'Sad face. We couldn’t find any useful data in this tweet.' )
+				}
+			})
+		},
+		error: function(){
+
+			console.log( 'Oops. Something went wrong requesting data from Twitter.' )
+		}
+	})
+}
+
+
+
+
+
+function locateWithGoogleMaps( text ){	
+
+
+	//  We also need to be wary of exceeding Google’s rate limiting.
+	//  But Google seems to be much more forgiving than Twitter.
+	//  If you want to be a good citizen you should sign up for a free 
+	//  API key and include that key in your HTML file. How? See here:
+	//  https://developers.google.com/maps/documentation/javascript/tutorial
+
+	//  For more on the geocoding service that we’re using see here:
+	//  https://developers.google.com/maps/documentation/javascript/geocoding
+	
+	geocoder.geocode( { 'address': text }, function( results, status ){
+
+		if( status == google.maps.GeocoderStatus.OK ){
+
+			console.log( '\nGoogle maps found a result for “'+ text +'”:' )
+			console.log( results[0].geometry.location )
+			tweets.push({
+
+				latitude:  results[0].geometry.location.lat(),
+				longitude: results[0].geometry.location.lng()
+			})
+		} 
+		else {
+
+			console.log( '\nNOPE. Even Google cound’t find “'+ text +'.”' )
+			console.log( 'Status code: '+ status )
+		}
+	})
+}
+
+
+
+function nextTweet(){
+	
+	if( tweetsIndex + 1 < tweets.length ){
+
+		tweetsIndex ++
+
+		//  Ideas for you crazy kids to spruce up your homework:
+		//  1. Only shine the sun on the part of Earth that is actually
+		//     currently experience daylight!
+		//  2. Rotate the globe to face the tweet you’re plotting.
+		//  3. Don’t just place the pin, but animate its appearance;
+		//     maybe it grows out of the Earth?
+		//  4. Display the contents of the tweet. I know, I know. We haven’t
+		//     even talked about text in Three.js yet. That’s why you’d get
+		//     über bragging rights.
+
+		earthGroup.add( dropPin(
+
+			tweets[ tweetsIndex ].latitude,
+			tweets[ tweetsIndex ].longitude,
+			0xFFFF00
+		))
+		
+
+		//  I’m trying to be very mindful of Twitter’s rate limiting.
+		//  Let’s only try fetching more tweets only when we’ve exhausted our
+		//  tweets[] array supply.
+		//  But leave this commented out when testing!
+		
+		//if( tweetsIndex === tweets.length - 1 ) fetchTweets()
+	}	
+	setTimeout( nextTweet, timePerTweet )
+}
+
+
+
+function exportTweets(){
+
+
+	//  Another way to be mindful of rate limiting is to PLAN AHEAD.
+	//  Why not save out this data you’ve already acquired?
+	//  This will dump your tweet data into the console for you
+	//  so you can copy + paste it into your /scripts/database.js file.
+
+	var data = 'database = database.concat(['
+	tweets.forEach( function( tweet, i ){
+
+		data += '\n	{'
+		data += '\n		latitude:  '+ tweet.latitude +','
+		data += '\n		longitude: '+ tweet.longitude
+		data += '\n	}'
+		if( i < tweets.length - 1 ) data += ','
+	})
+	data += '\n])'
+	console.log( data )
+}
+
+
+//If we export the data and then save it into the database file,
+//then we can use that data here.
+function importTweets(){
+	tweets = tweets.concat(database);
+}
 
 function loop(){
 
 	//  Let's rotate the entire group a bit.
 	//  Then we'll also rotate the cloudsTexture slightly more on top of that.
 
-	group.rotation.y  += ( 0.10 ).degreesToRadians()
+	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	/*moon.rotation.y  += ( 0.50 ).degreesToRadians()
-
+	moon.rotation.y  += ( 0.50 ).degreesToRadians()
 	moon.position.x += 0.3; 
 	moon.position.z -= 0.3;
-	*/
+	
 	moonGroup.rotation.y += ( 2 ).degreesToRadians()
 
-
-
-
-
-	render()
-	controls.update()
+	render();
+	controls.update();
 	
-	window.requestAnimationFrame( loop )
+	window.requestAnimationFrame( loop );
 }
-
 
 //Let's drop the pins!
 function dropPin( latitude, longitude, color ){
@@ -202,14 +392,17 @@ function dropPin( latitude, longitude, color ){
 			color: color, wireframe: true, side: THREE.DoubleSide
 		})
 	)	
+	//marker stands straight around the center point in the beginning.
+	//so we push the marker to the North Pole to stand on the surface.
 
 	marker.position.y = earthRadius;
 	
-
+	
+	//then rotate towards the latitude
 	group1.add( marker )
 	group1.rotation.x = ( 90 - latitude  ).degreesToRadians()
 	
-
+	//and then rotate followed by the longitude
 	group2.add( group1 )
 	group2.rotation.y = ( 90 + longitude ).degreesToRadians()
 
@@ -274,13 +467,14 @@ function setupThree(){
 	window.scene = new THREE.Scene();
 	//window.scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
 	
+	//these variables would define the dimensions of the camera's view
 	var
 	WIDTH      = 600,
 	HEIGHT     = 600,
 	VIEW_ANGLE = 45,
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1,
-	FAR        = 10000
+	FAR        = 10000;
 	
 	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
 	camera.position.set( 0, 0, 300 )
@@ -318,7 +512,7 @@ function addControls(){
 	controls.dynamicDampingFactor = 0.3
 	controls.keys = [ 65, 83, 68 ]//  ASCII values for A, S, and D
 
-	controls.addEventListener( 'change', render )
+	controls.addEventListener( 'change', render );
 }
 
 
