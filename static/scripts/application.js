@@ -3,6 +3,7 @@
 /////////////////////////////////////////////
 
 //  https://api.twitter.com/1/account/rate_limit_status.json
+// http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
 
 
 $( document ).ready( function(){
@@ -11,18 +12,12 @@ $( document ).ready( function(){
 	addLights();
 	addControls();
 
-//here we set upt the Google Geocoder so that we can find lat/lng values by just
-//typing the name of the locations. We also need to call Google Maps API Library
-//in our index.html file.
-//Like always, we attach this to the window so that we can always access to this function
-//not limited to the function scope.
-
 	window.geocoder = new google.maps.Geocoder();
 
 	window.tweets = [];
 	window.tweetsIndex = -1; //what does it mean?
 	window.timePerTweet = (3).seconds(); // what does it mean?
-	window.tweetApiArmed = false ; //if it's FALSE, we will only play with data.js file.
+	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
 ////We are creating group to manipulate them more easily
@@ -36,7 +31,7 @@ $( document ).ready( function(){
 	window.earth = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
-			map: THREE.ImageUtils.loadTexture( 'media/earthTexture.png' )
+			map: THREE.ImageUtils.loadTexture( 'media/world.jpg' )
 		})
 	)
 	earth.position.set( 0, 0, 0 )
@@ -51,7 +46,7 @@ $( document ).ready( function(){
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
-			map: THREE.ImageUtils.loadTexture( 'media/cloudsTexture.png' ),
+			map: THREE.ImageUtils.loadTexture( 'media/earthTexture.png' ),
 			transparent: true,
 			blending: THREE.CustomBlending,
 			blendSrc: THREE.SrcAlphaFactor,
@@ -221,7 +216,7 @@ function fetchTweets(){
 					tweet.geo.coordinates && 
 					tweet.geo.coordinates.type === 'Point' ){
 					
-					console.log( 'YES! Twitter had the latitude and longitude:' )
+					console.log( 'Yay! Twitter had the latitude and longitude:' )
 					console.log( tweet.geo )
 					tweets.push({
 
@@ -231,7 +226,7 @@ function fetchTweets(){
 				}
 				else if( tweet.location ){
 					
-					console.log( 'Ok. Only found a location name, will try Google Maps for:' )
+					console.log( 'At least the name of the location found. will try Google Maps for:' )
 					console.log( tweet.location )
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.location )
@@ -239,7 +234,7 @@ function fetchTweets(){
 				}
 				else if( tweet.iso_language_code ){
 					
-					console.log( 'Not good: Resorting to the ISO language code as last hope:' )
+					console.log( 'Non-English data: Resorting to the ISO language code as last hope:' )
 					console.log( tweet.iso_language_code )
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.iso_language_code )
@@ -247,7 +242,7 @@ function fetchTweets(){
 				}
 				else {
 
-					console.log( 'Sad face. We couldn’t find any useful data in this tweet.' )
+					console.log( ':( We couldn’t find any useful data in this tweet.' )
 				}
 			})
 		},
@@ -316,8 +311,14 @@ function nextTweet(){
 
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
-			0xFFFF00
-		))
+			0x8df5ec
+		));
+
+		earthGroup.add( dropPinhead(
+			tweets[ tweetsIndex ].latitude,
+			tweets[ tweetsIndex ].longitude,
+			0x8df5ec
+		));
 		
 
 		//  I’m trying to be very mindful of Twitter’s rate limiting.
@@ -387,7 +388,7 @@ function dropPin( latitude, longitude, color ){
 	group2 = new THREE.Object3D(),
 	markerLength = 36,
 	marker = new THREE.Mesh(
-		new THREE.CubeGeometry( 2, markerLength, 2 ),
+		new THREE.CubeGeometry( 1, markerLength, 1 ),
 		new THREE.MeshBasicMaterial({ 
 			color: color, wireframe: true, side: THREE.DoubleSide
 		})
@@ -418,13 +419,13 @@ function dropPinhead( latitude, longitude, color ){
 	group4 = new THREE.Object3D(),
 
 	pinhead = new THREE.Mesh(
-		new THREE.SphereGeometry(8,8,8),
+		new THREE.SphereGeometry(4,4,4),
 		new THREE.MeshLambertMaterial( { 
 		color: color, shading: THREE.SmoothShading, overdraw: true } )
 	)
 
 	
-	pinhead.position.y = earthRadius + 24;
+	pinhead.position.y = earthRadius + 16;
 
 	group3.add( pinhead )
 	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
