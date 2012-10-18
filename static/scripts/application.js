@@ -1,6 +1,9 @@
 /////////////////////////////////////////////
-////////////Shining Earth////////////////////
+////////////Shining Earth ver 2.0////////////////////
 /////////////////////////////////////////////
+
+//  https://api.twitter.com/1/account/rate_limit_status.json
+
 
 $( document ).ready( function(){
 	
@@ -8,8 +11,25 @@ $( document ).ready( function(){
 	addLights();
 	addControls();
 
-////this is earth group!
-	window.group = new THREE.Object3D()
+//here we set upt the Google Geocoder so that we can find lat/lng values by just
+//typing the name of the locations. We also need to call Google Maps API Library
+//in our index.html file.
+//Like always, we attach this to the window so that we can always access to this function
+//not limited to the function scope.
+
+//	window.geocoder = new google.mapsGeocoder();
+
+//	window.tweets = [];
+//	window.tweetsIndex = -1; //what does it mean?
+//	window.timePerTweet(3).seconds(); // what does it mean?
+//	window.tweetApiAmred = false ; //if it's FALSE, we will only play with data.js file.
+								 //which is not real-time deal.
+
+////We are creating group to manipulate them more easily
+
+////this is earth group
+
+	window.earthGroup = new THREE.Object3D()
 
 	//Let's draw earth
 	window.earthRadius = 90
@@ -20,12 +40,13 @@ $( document ).ready( function(){
 		})
 	)
 	earth.position.set( 0, 0, 0 )
-	earth.receiveShadow = true
-	earth.castShadow = true
-	group.add( earth )
+	earth.receiveShadow = true;
+	earth.castShadow = true;
+	//group.add( earth );
+	earthGroup.add (earth);
 
 
-	//clouds
+	//Let's add clouds to the earth group
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
@@ -40,7 +61,7 @@ $( document ).ready( function(){
 	clouds.position.set( 0, 0, 0 )
 	clouds.receiveShadow = true
 	clouds.castShadow = true
-	group.add( clouds )
+	earthGroup.add( clouds )
 
 
  ////this is Moon Group!!!
@@ -101,7 +122,6 @@ $( document ).ready( function(){
 	}
 	
 
-
 	scene.add(particleSystem);
 */
 	group.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
@@ -133,6 +153,11 @@ $( document ).ready( function(){
 	moon.rotation.y = ( 90 ).degreesToRadians()
 	moon.rotation.z = (  45 ).degreesToRadians()
 
+
+	moonSatellite.rotation.y = ( 90 ).degreesToRadians()
+	moonSatellite.rotation.z = (  45 ).degreesToRadians()
+
+
 	loop()	
 })
 
@@ -152,6 +177,7 @@ function loop(){
 	moon.position.z -= 0.3;
 	*/
 	moonGroup.rotation.y += ( 2 ).degreesToRadians()
+
 
 
 
