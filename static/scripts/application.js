@@ -26,15 +26,7 @@ $( document ).ready( function(){
 /////////////////////////////////////////////
 /////////background trial///////////////////
 
-	window.bg = new THREE.Mesh(
-		new THREE.PlaneGeometry(0,0,-500),
-		new THREE.MeshBasicMaterial({
-			map: THREE.ImageUtils.loadTexture( 'media/starfield.jpg' )
-		})
-	);
 
-	bg.material.depthTest = false;
-	bg.material.depthWrite = false;
 
 
 
@@ -61,6 +53,7 @@ $( document ).ready( function(){
 	//Let's add clouds to the earth group
 	//We are giving some transparency so earth is visible through the clouds
 	//Blender mode is used for this effect
+	
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
@@ -86,7 +79,7 @@ $( document ).ready( function(){
 	moonGroup.rotation.x = ( 20 ).degreesToRadians()
 
 	//Let's draw moon
-	window.moonRadius = 30;
+	window.moonRadius = 15;
 	window.moon = new THREE.Mesh(
 		new THREE.SphereGeometry (moonRadius, 100, 100),
 		new THREE.MeshLambertMaterial ({
@@ -94,20 +87,20 @@ $( document ).ready( function(){
 
 		})
 	)
-	var moonX = 200, moonY = 0, moonZ = 0;
+	var moonX = 100, moonY = 0, moonZ = 0;
 	moon.position.set(moonX, moonY, moonZ)
 	moon.receiveShadow = true;
 	moon.castShadow = true;
 
 
-	window.moonSatelliteRadius = 8 ; 
+	window.moonSatelliteRadius = 5 ; 
 	window.moonSatellite = new THREE.Mesh(
 		new THREE.SphereGeometry (moonSatelliteRadius, 8, 8),
 		new THREE.MeshBasicMaterial({ 
 			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
 		})
 	) 
-	moonSatellite.position.set (moonX + 130, moonY, moonZ);
+	moonSatellite.position.set (moonX + 80, moonY, moonZ);
 	moonSatellite.receiveShadow = true;
 	moonSatellite.castShadow = true;
 
@@ -214,7 +207,7 @@ var Shaders = {
 	earthGroup.add( dropPin( 42.640278, 18.108333, 0x8df5ec))//Blue is Dubrovnik, Croatia
 	earthGroup.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
 */
-	scene.add(bg);
+	//scene.add(bg);
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
@@ -392,6 +385,7 @@ function nextTweet(){
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
 			0x8df5ec,
+
 			markerLength
 		)
 		
@@ -401,6 +395,7 @@ function nextTweet(){
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
 			0x8df5cc
+			//0x0000ff
 		));
 		
 
@@ -532,7 +527,12 @@ function dropPinhead( latitude, longitude, color ){
 //  So that our controls can also call it separately.
 
 function render(){
-	renderer.render( scene, camera )
+	renderer.autoClear = false;
+	renderer.clear();
+	
+	renderer.render(bgScene,bgCam);
+	renderer.render( scene, camera );
+	
 }
 
 //  I'll leave this in for the moment for reference, but it seems to be
@@ -576,6 +576,22 @@ function setupThree(){
 	camera.lookAt( scene.position )
 	scene.add( camera )
 
+// I don't think it's working.
+//now bg is rendered from the css file
+	window.bg = new THREE.Mesh(
+		new THREE.PlaneGeometry(2,2,0),
+		new THREE.MeshBasicMaterial({
+			map: THREE.ImageUtils.loadTexture( 'media/starfieldwide.png' )
+		})
+	);
+
+	bg.material.depthTest = false;
+	bg.material.depthWrite = false;
+
+	window.bgScene = new THREE.Scene();
+	window.bgCam = new THREE.Camera();
+	bgScene.add(bgCam);
+	bgScene.add(bg);
 	
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
 	//window.renderer = new THREE.CanvasRenderer({ antialias: true })
