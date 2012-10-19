@@ -91,7 +91,62 @@ $( document ).ready( function(){
 	moonSatellite.receiveShadow = true;
 	moonSatellite.castShadow = true;
 
-	moonGroup.add (moonSatellite);
+	//////////////////////////////////////////////////////
+///////////////////SHADER experiments ////////////////////////
+//////////////////////////////////////////////////////////////
+/*
+var Shaders = {
+	"earth": {
+		uniforms: {
+			"texture": { type: "t", value: 0, texture: null} 
+		},
+		vertexShader: [
+		'varying vec3 vNormal;',
+        'varying vec2 vUv;',
+        'void main() {',
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+          'vNormal = normalize( normalMatrix * normal );',
+          'vUv = uv;',
+        '}'
+	].join("\n"),
+	fragmentShader: [
+		'uniform sampler2D texture;',
+        'varying vec3 vNormal;',
+        'varying vec2 vUv;',
+        'void main() {',
+          'vec3 diffuse = texture2D( texture, vUv ).xyz;',
+          'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',
+          'vec3 atmosphere = vec3( 1.0, 1.0, 1.0 ) * pow( intensity, 3.0 );',
+          'gl_FragColor = vec4( diffuse + atmosphere, 1.0 );',
+        '}'
+	].join("\n")
+	},
+	"atmosphere": {
+		uniforms: {},
+		vertexShader:[
+		'varying vec3 vNormal;',
+        'void main() {',
+          'vNormal = normalize( normalMatrix * normal );',
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+        '}'
+		].join("\n"),
+		fragmentShader: [
+		'varying vec3 vNormal;',
+        'void main() {',
+          'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
+          'gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;',
+        '}'	
+		].join("\n")
+	}
+}
+*/
+
+/////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 	/////////////////////////////////////////////////////
 	//////////////particle experiments////////////////////////
@@ -142,6 +197,7 @@ $( document ).ready( function(){
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
+	moonGroup.add(moonSatellite);
 
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
@@ -292,6 +348,8 @@ function locateWithGoogleMaps( text ){
 
 
 function nextTweet(){
+	var markerLength = 30;
+	//markerLength += 1;
 	
 	if( tweetsIndex + 1 < tweets.length ){
 
@@ -311,8 +369,11 @@ function nextTweet(){
 
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
-			0x8df5ec
-		));
+			0x8df5ec,
+			markerLength
+		)
+		
+		);
 
 		earthGroup.add( dropPinhead(
 			tweets[ tweetsIndex ].latitude,
@@ -361,6 +422,8 @@ function importTweets(){
 	tweets = tweets.concat(database);
 }
 
+
+
 function loop(){
 
 	//  Let's rotate the entire group a bit.
@@ -371,6 +434,7 @@ function loop(){
 	moon.rotation.y  += ( 0.50 ).degreesToRadians()
 	moon.position.x += 0.3; 
 	moon.position.z -= 0.3;
+	//marker.position.y += 0.3;
 	
 	moonGroup.rotation.y += ( 2 ).degreesToRadians()
 
@@ -381,21 +445,26 @@ function loop(){
 }
 
 //Let's drop the pins!
-function dropPin( latitude, longitude, color ){
+function dropPin( latitude, longitude, color, markerLength ){
 
 	var 
 	group1 = new THREE.Object3D(),
 	group2 = new THREE.Object3D(),
-	markerLength = 36,
 	marker = new THREE.Mesh(
 		new THREE.CubeGeometry( 1, markerLength, 1 ),
 		new THREE.MeshBasicMaterial({ 
 			color: color, wireframe: true, side: THREE.DoubleSide
-		})
+		}
+
+		)
+
 	)	
+	
 	//marker stands straight around the center point in the beginning.
 	//so we push the marker to the North Pole to stand on the surface.
-
+	//while (marker.position.y <=  earthRadius){
+	//marker.position.y += 0.05;
+	//}
 	marker.position.y = earthRadius;
 	
 	
@@ -464,6 +533,7 @@ function surfacePlot( params ){
 }
 
 function setupThree(){
+
 	
 	window.scene = new THREE.Scene();
 	//window.scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
@@ -477,6 +547,8 @@ function setupThree(){
 	NEAR       = 0.1,
 	FAR        = 10000;
 	
+
+
 	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
 	camera.position.set( 0, 0, 300 )
 	camera.lookAt( scene.position )
