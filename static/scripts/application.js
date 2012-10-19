@@ -20,6 +20,24 @@ $( document ).ready( function(){
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
+
+
+
+/////////////////////////////////////////////
+/////////background trial///////////////////
+
+	window.bg = new THREE.Mesh(
+		new THREE.PlaneGeometry(0,0,-500),
+		new THREE.MeshBasicMaterial({
+			map: THREE.ImageUtils.loadTexture( 'media/starfield.jpg' )
+		})
+	);
+
+	bg.material.depthTest = false;
+	bg.material.depthWrite = false;
+
+
+
 ////We are creating group to manipulate them more easily
 
 ////this is earth group
@@ -73,6 +91,7 @@ $( document ).ready( function(){
 		new THREE.SphereGeometry (moonRadius, 100, 100),
 		new THREE.MeshLambertMaterial ({
 			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
+
 		})
 	)
 	var moonX = 200, moonY = 0, moonZ = 0;
@@ -195,10 +214,12 @@ var Shaders = {
 	earthGroup.add( dropPin( 42.640278, 18.108333, 0x8df5ec))//Blue is Dubrovnik, Croatia
 	earthGroup.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
 */
+	scene.add(bg);
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
 	moonGroup.add(moonSatellite);
+
 
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
@@ -379,7 +400,7 @@ function nextTweet(){
 		earthGroup.add( dropPinhead(
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
-			0x8df5ec
+			0x8df5cc
 		));
 		
 
@@ -432,12 +453,12 @@ function loop(){
 
 	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	moon.rotation.y  += ( 0.50 ).degreesToRadians()
+	moon.rotation.y  += ( 0.02 ).degreesToRadians()
 	moon.position.x += 0.3; 
 	moon.position.z -= 0.3;
 	//marker.position.y += 0.3;
 	
-	moonGroup.rotation.y += ( 2 ).degreesToRadians()
+	moonGroup.rotation.y += ( 0.8 ).degreesToRadians()
 
 	render();
 	controls.update();
@@ -489,13 +510,13 @@ function dropPinhead( latitude, longitude, color ){
 	group4 = new THREE.Object3D(),
 
 	pinhead = new THREE.Mesh(
-		new THREE.SphereGeometry(4,4,4),
+		new THREE.SphereGeometry(3,3,3),
 		new THREE.MeshLambertMaterial( { 
 		color: color, shading: THREE.SmoothShading, overdraw: true } )
 	)
 
 	
-	pinhead.position.y = earthRadius + 16;
+	pinhead.position.y = earthRadius + 15;
 
 	group3.add( pinhead )
 	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
@@ -541,7 +562,7 @@ function setupThree(){
 	
 	//these variables would define the dimensions of the camera's view
 	var
-	WIDTH      = 600,
+	WIDTH      = 600
 	HEIGHT     = 600,
 	VIEW_ANGLE = 45,
 	ASPECT     = WIDTH / HEIGHT,
@@ -599,7 +620,7 @@ function addLights(){
 	//  Let's create an Ambient light so that even the dark side of the 
 	//  earth will be a bit visible. 
 	
-	ambient = new THREE.AmbientLight( 0x666666 )
+	ambient = new THREE.AmbientLight( 0xBBBBBB )
 	scene.add( ambient )	
 	
 	
