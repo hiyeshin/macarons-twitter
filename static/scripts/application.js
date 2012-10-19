@@ -31,7 +31,7 @@ $( document ).ready( function(){
 	window.earth = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
-			map: THREE.ImageUtils.loadTexture( 'media/world.jpg' )
+			map: THREE.ImageUtils.loadTexture( 'media/kubr.jpg' )
 		})
 	)
 	earth.position.set( 0, 0, 0 )
@@ -46,7 +46,8 @@ $( document ).ready( function(){
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
-			map: THREE.ImageUtils.loadTexture( 'media/earthTexture.png' ),
+			//map: THREE.ImageUtils.loadTexture( 'media/cloudsTexture.png' ),
+			map: THREE.ImageUtils.loadTexture( 'media/world.jpg' ),
 			transparent: true,
 			blending: THREE.CustomBlending,
 			blendSrc: THREE.SrcAlphaFactor,
