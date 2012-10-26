@@ -7,31 +7,33 @@
 body
 {
 	margin: 0;
-	/*background: #000000 url(/media/starfieldwide.png) repeat;*/
-	font-family: "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
+	
 	font-size:   12px;
 	line-height: 20px;
 		overflow: hidden;
 }
-h2
-{
-	font-color: "white";
-	font-size:   24px;
+footer
+{	position: absolute;
+	font-family: "Georgia", Times, serif;
+	font-size:   15px;
+	font-style: italic;
+	font-weight: bold;
+	
+	top: 720px; 
+	width: 100%;
+	color: #ffffff;
+	padding: 5px;
+				
+	text-align:center;
+	z-index:1000;
+
 
 
 }
 
 #three
 {
-	/*position: absolute;*/
-	/*background: #000000 url(/media/starfield.jpg) repeat;
-	*/
-	background: #000000 url(/media/starfieldwide.png) repeat;
-	/*top:  50%;
-	left: 50%;*/
-	/*margin: -400px -200px -100px -400px;*/
-	/*width:  800px;
-	height: 800px;*/
+
 	width: 100%;
 	height: 100%;
 }

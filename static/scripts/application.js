@@ -4,16 +4,11 @@
 
 //  https://api.twitter.com/1/account/rate_limit_status.json
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
-//var centerX = window.innerWidth/2;
-//var centerY = window.innerHeight/2;
-// var shader = THREE.ShaderUtils.lib["cube"];
-// var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-// 	uniforms["tCube"].texture = textureCube;
-// var sky = "/media/starfieldwide.png"
-// var textureCube = THREE.ImageUtils.loadTextureCube(sky, sky, sky, sky, sky, sky )
+
 
 
 $( document ).ready( function(){
+
 	
 	setupThree();
 	addLights();
@@ -42,7 +37,7 @@ $( document ).ready( function(){
 		})
 	)
 
-	twitterWord.position.set (-90,100,0);
+	twitterWord.position.set (-90,110,0);
 	twitterWord.receiveShadow = true;
 	twitterWord.castShadow = true;
 	textGroup.add(twitterWord);
@@ -59,7 +54,7 @@ $( document ).ready( function(){
 		})
 	)
 
-	plusSign.position.set (0,99,0);
+	plusSign.position.set (0,109,0);
 	plusSign.receiveShadow = true;
 	plusSign.castShadow = true;
 	textGroup.add(plusSign);
@@ -76,19 +71,31 @@ $( document ).ready( function(){
 		})
 	)
 
-	twitterLogo.position.set (30,100,0);
+	twitterLogo.position.set (30,110,0);
 	twitterLogo.receiveShadow = true;
 	twitterLogo.castShadow = true;
 	textGroup.add(twitterLogo);
+
+///////////////////////////////////// 
+var sky = "/media/starfieldwide.png"
+var urls = [sky, sky, sky, sky, sky, sky];
+var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+	// var skymaterials = THREE.ImageUtils.loadTextureCube([sky, sky, sky, sky, sky, sky] );
+var shader = THREE.ShaderUtils.lib["cube"];
+	// var uniforms = new THREE.UniformsUtils.clone( shader.uniforms );
+shader.uniforms[ "tCube" ].texture = textureCube;
+
 //Let's make a skycube!
-// window.skyboxMesh = new THREE.Mesh ( 
-// 	new THREE.CubeGeometry(50000, 50000, 50000, 1,1,1, null, true),
-// 	new THREE.MeshShaderMaterial({
-// 		fragmentShader: shader.fragmentShader,
-// 		vertexShader: shader.vertexShader,
-// 		uniforms: uniforms
-// 	})
-// )
+window.skybox = new THREE.Mesh( 
+	new THREE.CubeGeometry( 50000, 50000, 50000, 1,1,1 ),
+		new THREE.ShaderMaterial({
+		fragmentShader: shader.fragmentShader,
+		vertexShader: shader.vertexShader,
+		uniforms: shader.uniforms,
+		depthWrite: false,
+		side:THREE.BackSide
+	})
+)
 ///this is earth group
 
 	window.earthGroup = new THREE.Object3D()
@@ -161,25 +168,7 @@ $( document ).ready( function(){
 	moonSatellite.receiveShadow = true;
 	moonSatellite.castShadow = true;
 
-
-
-/*
-	earthGroup.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
-	earthGroup.add( dropPinhead( 37.542672, 127.027308, 0x8edf9f))
-
-	earthGroup.add( dropPin( 13.4125, 103.866667, 0xd4b698)) //Beige is for Angkore Wat, Cambodia	
-	earthGroup.add( dropPinhead( 13.4125, 103.866667, 0xd4b698 ))
-
-	earthGroup.add( dropPin( 48.872224,2.303339, 0xeab8fa )) //Purple is for Laduree, Paris, France
-	earthGroup.add( dropPinhead( 48.872224,2.303339, 0xeab8fa ))
-
-	earthGroup.add( dropPin( 22.296372, 114.172469, 0xffffbf)) //yellow is Chungking mansion, Hong kong
-	earthGroup.add( dropPinhead( 22.296372, 114.172469, 0xffffbf ))
-
-	earthGroup.add( dropPin( 42.640278, 18.108333, 0x8df5ec))//Blue is Dubrovnik, Croatia
-	earthGroup.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
-*/
-	//scene.add(bg);
+	scene.add( skybox );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
