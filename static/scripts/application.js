@@ -235,9 +235,9 @@ function fetchTweets(){
 	console.log( '\n\nFetching fresh tweets from Twitter.' )
 	$.ajax({
 
-		url: 'http://search.twitter.com/search.json?geocode=0,0,6400km',
-
-
+//		url: 'http://search.twitter.com/search.json?geocode=0,0,6400km',
+//	url:"http://search.twitter.com/search.json?q=macaron&src=typd&geocode=0,0,6400km",
+url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 		//  We have to use the datatype 'JSONp' (JavaScript Object Notation with
 		//  Padding) in order to safely fetch data that’s not coming from our own
 		//  domain name. (Basically, side-stepping a browser security issue.)
