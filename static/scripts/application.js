@@ -21,21 +21,8 @@ $( document ).ready( function(){
 								 //which is not real-time deal.
 
 /////////////////////////////////////////////
-/////////background trial///////////////////
-
-// 	window.twitterWord = new THREE.TextGeometry ( 
-// 		"Macarons", {
-// 		size: 10, height: 5, curveSegments: 6, 
-// 		font: "droid", weight: "normal", style: "normal" 
-// 	});
-// //})
-
-// 	twitterWord.position.set (0,800,0);
-// 	twitterWord.receiveShadow = true;
-// 	twitterWord.castShadow = true;
-
 	window.twitterWord = new THREE.Mesh(
-		new THREE.TextGeometry("Macarons", {
+		new THREE.TextGeometry("macarons", {
 			size: 10, height: 5, curveSegments: 6, 
 			font: "droid serif", 
 			weight: "normal", style: "normal" 
@@ -45,7 +32,7 @@ $( document ).ready( function(){
 		})
 	)
 
-	twitterWord.position.set (0,800,0);
+	twitterWord.position.set (-32,140,0);
 	twitterWord.receiveShadow = true;
 	twitterWord.castShadow = true;
 
