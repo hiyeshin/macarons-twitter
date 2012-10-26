@@ -20,19 +20,39 @@ $( document ).ready( function(){
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
-
-
-
 /////////////////////////////////////////////
 /////////background trial///////////////////
 
+// 	window.twitterWord = new THREE.TextGeometry ( 
+// 		"Macarons", {
+// 		size: 10, height: 5, curveSegments: 6, 
+// 		font: "droid", weight: "normal", style: "normal" 
+// 	});
+// //})
+
+// 	twitterWord.position.set (0,800,0);
+// 	twitterWord.receiveShadow = true;
+// 	twitterWord.castShadow = true;
+
+	window.twitterWord = new THREE.Mesh(
+		new THREE.TextGeometry("Macarons", {
+			size: 10, height: 5, curveSegments: 6, 
+			font: "droid serif", 
+			weight: "normal", style: "normal" 
+		}),
+		new THREE.MeshBasicMaterial({ 
+			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+		})
+	)
+
+	twitterWord.position.set (0,800,0);
+	twitterWord.receiveShadow = true;
+	twitterWord.castShadow = true;
 
 
 
 
-////We are creating group to manipulate them more easily
-
-////this is earth group
+///this is earth group
 
 	window.earthGroup = new THREE.Object3D()
 
@@ -208,6 +228,7 @@ var Shaders = {
 	earthGroup.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
 */
 	//scene.add(bg);
+	scene.add( twitterWord );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
