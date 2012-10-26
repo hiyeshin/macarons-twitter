@@ -7,13 +7,19 @@
 body
 {
 	margin: 0;
-	background: #000000 url(/media/starfieldwide.png) repeat;
+	/*background: #000000 url(/media/starfieldwide.png) repeat;*/
 	font-family: "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
 	font-size:   12px;
 	line-height: 20px;
-	overflow: hidden;
+		overflow: hidden;
 }
+h2
+{
+	font-color: "white";
+	font-size:   24px;
 
+
+}
 
 #three
 {
