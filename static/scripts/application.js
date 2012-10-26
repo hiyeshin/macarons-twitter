@@ -4,7 +4,8 @@
 
 //  https://api.twitter.com/1/account/rate_limit_status.json
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
-
+var centerX = window.innerWidth/2;
+var centerY = window.innerHeight/2;
 
 $( document ).ready( function(){
 	
@@ -20,7 +21,7 @@ $( document ).ready( function(){
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
-/////////////////////////////////////////////
+//////////twitter search word///////////////////
 	window.twitterWord = new THREE.Mesh(
 		new THREE.TextGeometry("macarons", {
 			size: 10, height: 5, curveSegments: 6, 
@@ -32,12 +33,9 @@ $( document ).ready( function(){
 		})
 	)
 
-	twitterWord.position.set (-32,140,0);
+	twitterWord.position.set (0,100,0);
 	twitterWord.receiveShadow = true;
 	twitterWord.castShadow = true;
-
-
-
 
 ///this is earth group
 
@@ -111,92 +109,7 @@ $( document ).ready( function(){
 	moonSatellite.receiveShadow = true;
 	moonSatellite.castShadow = true;
 
-	//////////////////////////////////////////////////////
-///////////////////SHADER experiments ////////////////////////
-//////////////////////////////////////////////////////////////
-/*
-var Shaders = {
-	"earth": {
-		uniforms: {
-			"texture": { type: "t", value: 0, texture: null} 
-		},
-		vertexShader: [
-		'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
-          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-          'vNormal = normalize( normalMatrix * normal );',
-          'vUv = uv;',
-        '}'
-	].join("\n"),
-	fragmentShader: [
-		'uniform sampler2D texture;',
-        'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
-          'vec3 diffuse = texture2D( texture, vUv ).xyz;',
-          'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',
-          'vec3 atmosphere = vec3( 1.0, 1.0, 1.0 ) * pow( intensity, 3.0 );',
-          'gl_FragColor = vec4( diffuse + atmosphere, 1.0 );',
-        '}'
-	].join("\n")
-	},
-	"atmosphere": {
-		uniforms: {},
-		vertexShader:[
-		'varying vec3 vNormal;',
-        'void main() {',
-          'vNormal = normalize( normalMatrix * normal );',
-          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-        '}'
-		].join("\n"),
-		fragmentShader: [
-		'varying vec3 vNormal;',
-        'void main() {',
-          'float intensity = pow( 0.8 - dot( vNormal, vec3( 0, 0, 1.0 ) ), 12.0 );',
-          'gl_FragColor = vec4( 1.0, 1.0, 1.0, 1.0 ) * intensity;',
-        '}'	
-		].join("\n")
-	}
-}
-*/
 
-/////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-	/////////////////////////////////////////////////////
-	//////////////particle experiments////////////////////////
-	///////////////////////////////////////////////////
-	//var particleCount = 180;
-/*	
-	window.particleSystem = new THREE.ParticleSystem(
-    	new THREE.Geometry(),
-    	new THREE.ParticleBasicMaterial({
-        	color: 0xFFFFFF,
-        	size: 5
-    	  })
-    	)
-    
-     
-	// now create the individual particles
-	for(var p = 0; p < 180; p++) {
- 
- 	 	var pX = Math.random() * 500 - 250,
-    	  	pY = Math.random() * 500 - 250,
-      		pZ = Math.random() * 500 - 250,
-      		particle = new THREE.Vertex(
-      	  new THREE.Vector3(pX, pY, pZ)
-      	);
-  		particleSystem.geometry.vertices.push(particle);
-	}
-	
-
-	scene.add(particleSystem);
-*/
 
 /*
 	earthGroup.add( dropPin( 37.542672, 127.027308, 0x8edf9f)) //  Green is Han River, Seoul, South Korea
@@ -570,12 +483,12 @@ function setupThree(){
 	
 	//these variables would define the dimensions of the camera's view
 	var
-	WIDTH      = 600
-	HEIGHT     = 600,
+	WIDTH      = window.innerWidth,
+	HEIGHT     = window.innerHeight,
 	VIEW_ANGLE = 45,
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1,
-	FAR        = 10000;
+	FAR        = 6000;
 	
 
 
@@ -637,12 +550,7 @@ function addControls(){
 
 function addLights(){
 	
-	var
-	ambient,
-	directional
-		
-	//  Let's create an Ambient light so that even the dark side of the 
-	//  earth will be a bit visible. 
+	var ambient, directional;
 	
 	ambient = new THREE.AmbientLight( 0xBBBBBB )
 	scene.add( ambient )	
@@ -667,5 +575,3 @@ function addLights(){
 	directional.shadowMapWidth      = directional.shadowMapHeight = 2048
 	//directional.shadowCameraVisible = true
 }
-
-
