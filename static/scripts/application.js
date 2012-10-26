@@ -37,8 +37,8 @@ $( document ).ready( function(){
 			font: "droid serif", 
 			weight: "bold", style: "normal" 
 		}),
-		new THREE.MeshDepthMaterial({ 
-			color:0xFFFFFF, wireframe: false, side: THREE.DoubleSide
+		new THREE.MeshBasicMaterial({ 
+			color:0xf3d9f5, wireframe: false, side: THREE.DoubleSide
 		})
 	)
 
@@ -55,11 +55,11 @@ $( document ).ready( function(){
 			weight: "normal", style: "normal" 
 		}),
 		new THREE.MeshBasicMaterial({ 
-			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+			color:0xe6f1e5, wireframe: true, side: THREE.DoubleSide
 		})
 	)
 
-	plusSign.position.set (0,100,0);
+	plusSign.position.set (0,99,0);
 	plusSign.receiveShadow = true;
 	plusSign.castShadow = true;
 	textGroup.add(plusSign);
@@ -72,7 +72,7 @@ $( document ).ready( function(){
 			weight: "normal", style: "normal" 
 		}),
 		new THREE.MeshPhongMaterial({ 
-			color:0xFFFFFF, wireframe: false, side: THREE.DoubleSide
+			color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
 		})
 	)
 
