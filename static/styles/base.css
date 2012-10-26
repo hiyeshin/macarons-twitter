@@ -31,6 +31,10 @@ a{	font-size:   28px;
 	color: #9ae7c7;
 }
 
+a: hover{
+
+	color: #9ae7c7;	
+}
 #three
 {
 
