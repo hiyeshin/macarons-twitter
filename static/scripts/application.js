@@ -37,8 +37,8 @@ $( document ).ready( function(){
 			font: "droid serif", 
 			weight: "bold", style: "normal" 
 		}),
-		new THREE.MeshBasicMaterial({ 
-			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+		new THREE.MeshDepthMaterial({ 
+			color:0xFFFFFF, wireframe: false, side: THREE.DoubleSide
 		})
 	)
 
@@ -71,8 +71,8 @@ $( document ).ready( function(){
 			font: "droid sans", 
 			weight: "normal", style: "normal" 
 		}),
-		new THREE.MeshBasicMaterial({ 
-			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+		new THREE.MeshPhongMaterial({ 
+			color:0xFFFFFF, wireframe: false, side: THREE.DoubleSide
 		})
 	)
 
