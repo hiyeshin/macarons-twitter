@@ -14,17 +14,17 @@ body
 }
 footer
 {	position: absolute;
-	font-family: "Georgia", Times, serif;
+	font-family: "Mrs Eaves", "Georgia", Times, serif;
 	font-size:   15px;
 	font-style: italic;
 	font-weight: bold;
 	
-	top: 720px; 
+	top: 670px; 
 	width: 100%;
 	color: #ffffff;
-	padding: 5px;
+	padding: 30px;
 				
-	text-align:center;
+	text-align:left;
 	z-index:1000;
 
 
