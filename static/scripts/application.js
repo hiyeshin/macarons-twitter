@@ -6,6 +6,12 @@
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
 var centerX = window.innerWidth/2;
 var centerY = window.innerHeight/2;
+// var shader = THREE.ShaderUtils.lib["cube"];
+// var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+// 	uniforms["tCube"].texture = textureCube;
+// var sky = "/media/starfieldwide.png"
+// var textureCube = THREE.ImageUtils.loadTextureCube(sky, sky, sky, sky, sky, sky )
+
 
 $( document ).ready( function(){
 	
@@ -21,10 +27,30 @@ $( document ).ready( function(){
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
-//////////twitter search word///////////////////
+//Let's make a text group!!!//////////
+	window.textGroup = new THREE.Object3D();
+
+//////////1. twitter search word: currently macarons ///////////////////
 	window.twitterWord = new THREE.Mesh(
 		new THREE.TextGeometry("macarons", {
 			size: 10, height: 5, curveSegments: 6, 
+			font: "droid serif", 
+			weight: "bold", style: "normal" 
+		}),
+		new THREE.MeshBasicMaterial({ 
+			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+		})
+	)
+
+	twitterWord.position.set (-90,100,0);
+	twitterWord.receiveShadow = true;
+	twitterWord.castShadow = true;
+	textGroup.add(twitterWord);
+
+/////////////2. "+" sign
+	window.plusSign = new THREE.Mesh(
+		new THREE.TextGeometry("+", {
+			size: 12, height: 5, curveSegments: 6, 
 			font: "droid serif", 
 			weight: "normal", style: "normal" 
 		}),
@@ -33,10 +59,36 @@ $( document ).ready( function(){
 		})
 	)
 
-	twitterWord.position.set (0,100,0);
-	twitterWord.receiveShadow = true;
-	twitterWord.castShadow = true;
+	plusSign.position.set (0,100,0);
+	plusSign.receiveShadow = true;
+	plusSign.castShadow = true;
+	textGroup.add(plusSign);
 
+//////////////3. "twitter"
+	window.twitterLogo = new THREE.Mesh(
+		new THREE.TextGeometry("twitter", {
+			size: 10, height: 5, curveSegments: 6, 
+			font: "droid sans", 
+			weight: "normal", style: "normal" 
+		}),
+		new THREE.MeshBasicMaterial({ 
+			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+		})
+	)
+
+	twitterLogo.position.set (30,100,0);
+	twitterLogo.receiveShadow = true;
+	twitterLogo.castShadow = true;
+	textGroup.add(twitterLogo);
+//Let's make a skycube!
+// window.skyboxMesh = new THREE.Mesh ( 
+// 	new THREE.CubeGeometry(50000, 50000, 50000, 1,1,1, null, true),
+// 	new THREE.MeshShaderMaterial({
+// 		fragmentShader: shader.fragmentShader,
+// 		vertexShader: shader.vertexShader,
+// 		uniforms: uniforms
+// 	})
+// )
 ///this is earth group
 
 	window.earthGroup = new THREE.Object3D()
@@ -52,7 +104,7 @@ $( document ).ready( function(){
 	earth.position.set( 0, 0, 0 )
 	earth.receiveShadow = true;
 	earth.castShadow = true;
-	earthGroup.add (earth);
+	earthGroup.add(earth);
 
 
 	//Let's add clouds to the earth group
@@ -128,7 +180,7 @@ $( document ).ready( function(){
 	earthGroup.add( dropPinhead( 42.640278, 18.108333, 0x8df5ec))
 */
 	//scene.add(bg);
-	scene.add( twitterWord );
+	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
@@ -450,7 +502,8 @@ function dropPinhead( latitude, longitude, color ){
 function render(){
 	renderer.autoClear = false;
 	renderer.clear();
-	
+
+
 	renderer.render(bgScene,bgCam);
 	renderer.render( scene, camera );
 	
@@ -515,7 +568,6 @@ function setupThree(){
 	bgScene.add(bg);
 	
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
-	//window.renderer = new THREE.CanvasRenderer({ antialias: true })
 	renderer.setSize( WIDTH, HEIGHT )
 	renderer.shadowMapEnabled = true
 	renderer.shadowMapSoft = true
@@ -554,7 +606,6 @@ function addLights(){
 	
 	ambient = new THREE.AmbientLight( 0xBBBBBB )
 	scene.add( ambient )	
-	
 	
 	//  Now let's create a Directional light as our pretend sunshine.
 	
