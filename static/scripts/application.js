@@ -1,12 +1,7 @@
 /////////////////////////////////////////////
-////////////Shining Earth ver 2.0////////////////////
+////////////Shining Earth ver 2.0////////////
 /////////////////////////////////////////////
-
-//  https://api.twitter.com/1/account/rate_limit_status.json
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
-
-
-
 $( document ).ready( function(){
 
 	
@@ -22,7 +17,8 @@ $( document ).ready( function(){
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
-//Let's make a text group!!!//////////
+/////Let's make a text group!!!//////////
+/////thanks mark for teach me how to create text in an easy way!///
 	window.textGroup = new THREE.Object3D();
 
 //////////1. twitter search word: currently macarons ///////////////////
@@ -77,17 +73,19 @@ $( document ).ready( function(){
 	textGroup.add(twitterLogo);
 
 ///////////////////////////////////// 
-var sky = "/media/starfieldwide.png"
-var urls = [sky, sky, sky, sky, sky, sky];
-var textureCube = THREE.ImageUtils.loadTextureCube( urls );
-	// var skymaterials = THREE.ImageUtils.loadTextureCube([sky, sky, sky, sky, sky, sky] );
-var shader = THREE.ShaderUtils.lib["cube"];
-	// var uniforms = new THREE.UniformsUtils.clone( shader.uniforms );
-shader.uniforms[ "tCube" ].texture = textureCube;
+////////skycube///////////////////
+//////////////////////////////////
+
+window.sky = "/media/starfieldwide.png"
+window.urls = [sky, sky, sky, sky, sky, sky];
+window.textureCube = THREE.ImageUtils.loadTextureCube( urls );
+window.shader = THREE.ShaderUtils.lib["cube"];
+//window.uniforms = new THREE.UniformsUtils.clone( shader.uniforms );
+window.shader.uniforms[ "tCube" ].texture = textureCube;
 
 //Let's make a skycube!
 window.skybox = new THREE.Mesh( 
-	new THREE.CubeGeometry( 50000, 50000, 50000, 1,1,1 ),
+	new THREE.CubeGeometry( 500, 500, 500, 1,1,1 ),
 		new THREE.ShaderMaterial({
 		fragmentShader: shader.fragmentShader,
 		vertexShader: shader.vertexShader,
@@ -168,7 +166,7 @@ window.skybox = new THREE.Mesh(
 	moonSatellite.receiveShadow = true;
 	moonSatellite.castShadow = true;
 
-	scene.add( skybox );
+	//scene.add( skybox );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
@@ -402,11 +400,7 @@ function importTweets(){
 }
 
 
-
 function loop(){
-
-	//  Let's rotate the entire group a bit.
-	//  Then we'll also rotate the cloudsTexture slightly more on top of that.
 
 	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
@@ -459,7 +453,6 @@ function dropPin( latitude, longitude, color, markerLength ){
 }
 
 
-//Let's make some pinhead
 function dropPinhead( latitude, longitude, color ){
 
 	var 
@@ -472,7 +465,6 @@ function dropPinhead( latitude, longitude, color ){
 		color: color, shading: THREE.SmoothShading, overdraw: true } )
 	)
 
-	
 	pinhead.position.y = earthRadius + 15;
 
 	group3.add( pinhead )
@@ -540,8 +532,6 @@ function setupThree(){
 	camera.lookAt( scene.position )
 	scene.add( camera )
 
-// I don't think it's working.
-//now bg is rendered from the css file
 	window.bg = new THREE.Mesh(
 		new THREE.PlaneGeometry(2,2,0),
 		new THREE.MeshBasicMaterial({
@@ -563,10 +553,8 @@ function setupThree(){
 	renderer.shadowMapSoft = true
 
 
-	//  In previous examples I've used the direct JavaScript syntax of
+	
 	//  document.getElementById( 'three' ).appendChild( renderer.domElement )
-	//  but now that we're using the jQuery library in this example we can
-	//  take advantage of it:	
 
 	$( '#three' ).append( renderer.domElement )
 }
