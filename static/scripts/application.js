@@ -4,8 +4,8 @@
 
 //  https://api.twitter.com/1/account/rate_limit_status.json
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
-var centerX = window.innerWidth/2;
-var centerY = window.innerHeight/2;
+//var centerX = window.innerWidth/2;
+//var centerY = window.innerHeight/2;
 // var shader = THREE.ShaderUtils.lib["cube"];
 // var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 // 	uniforms["tCube"].texture = textureCube;
@@ -532,12 +532,13 @@ function setupThree(){
 
 	
 	window.scene = new THREE.Scene();
-	//window.scene.fog = new THREE.FogExp2( 0x000000, 0.001 );
-	
+
 	//these variables would define the dimensions of the camera's view
 	var
 	WIDTH      = window.innerWidth,
 	HEIGHT     = window.innerHeight,
+	// WIDTH      = 600,
+	// HEIGHT     = 600,
 	VIEW_ANGLE = 45,
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1,
@@ -568,7 +569,7 @@ function setupThree(){
 	bgScene.add(bg);
 	
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
-	renderer.setSize( WIDTH, HEIGHT )
+	renderer.setSize( window.innerWidth, window.innerHeight )
 	renderer.shadowMapEnabled = true
 	renderer.shadowMapSoft = true
 
