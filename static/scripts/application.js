@@ -50,7 +50,7 @@ $( document ).ready( function(){
 			weight: "normal", style: "normal" 
 		}),
 		new THREE.MeshBasicMaterial({ 
-			color:0xe6f1e5, wireframe: true, side: THREE.DoubleSide
+			color:0xab7dec4, wireframe: true, side: THREE.DoubleSide
 		})
 	)
 

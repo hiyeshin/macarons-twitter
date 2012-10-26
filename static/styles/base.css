@@ -14,21 +14,26 @@ body
 }
 footer
 {	position: absolute;
-	font-family: "Mrs Eaves", "Georgia", Times, serif;
-	font-size:   15px;
-	font-style: italic;
+	font-family: "Mrs Eaves OT", Georgia, Times, serif;
+	/*font-family: "Courier", serif;*/
+	font-size:   24px;
+	/*font-style: italic;*/
 	font-weight: bold;
 	
-	top: 670px; 
+	top: 643px; 
 	width: 100%;
 	color: #ffffff;
-	padding: 30px;
+	padding: 38px;
 				
 	text-align:left;
 	z-index:1000;
 
 
 
+}
+
+a{
+	color: #9ae7c7;
 }
 
 #three
