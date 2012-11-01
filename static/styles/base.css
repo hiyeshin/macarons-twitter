@@ -23,18 +23,27 @@ footer
 	text-align:left;
 	z-index:1000;
 
-
-
 }
 
-a{	font-size:   28px;
+a: link{	
+	font-size:   28px;
 	color: #9ae7c7;
+	text-decoration: none;
 }
 
 a: hover{
-
+	font-size:   28px;
 	color: #9ae7c7;	
+	text-decoration: underline;
+
 }
+
+a: visited{	font-size:   28px;
+	color: #9ae7c7;
+	text-decoration: none;
+}
+
+
 #three
 {
 

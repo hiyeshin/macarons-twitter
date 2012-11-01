@@ -1,9 +1,27 @@
 /////////////////////////////////////////////
-////////////Shining Earth ver 2.0////////////
+////////////Macarons Earth ver 2.0////////////
 /////////////////////////////////////////////
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
-$( document ).ready( function(){
 
+//  Ideas for you crazy kids to spruce up your homework:
+		//  1. Only shine the sun on the part of Earth that is actually
+		//     currently experience daylight!
+		//  2. Rotate the globe to face the tweet you’re plotting.
+		//  3. Don’t just place the pin, but animate its appearance;
+		//     maybe it grows out of the Earth?
+		//  4. Display the contents of the tweet. I know, I know. We haven’t
+		//     even talked about text in Three.js yet. That’s why you’d get
+		//     über bragging rights.
+
+//functions to think about:
+//lookat.OBJECT3D (facing only a certain point)
+
+//pseudo-code
+//add macarons by using CylinderGeometry and ExtrudeGeometry?
+//and add macarons group and substitude with moon
+//sunlight would be nicer if I use point light? (source: webGL book)
+
+$( document ).ready( function(){
 	
 	setupThree();
 	addLights();
@@ -64,7 +82,7 @@ $( document ).ready( function(){
 		}),
 		new THREE.MeshPhongMaterial({ 
 			color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
-		})
+		})//Phong Material has a smooth, non-angular texture
 	)
 
 	twitterLogo.position.set (30,110,0);
@@ -73,7 +91,8 @@ $( document ).ready( function(){
 	textGroup.add(twitterLogo);
 
 ///////////////////////////////////// 
-////////skycube///////////////////
+////////skycube
+//it's not working yet. Maybe we don't need it?///////////////////
 //////////////////////////////////
 
 window.sky = "/media/starfieldwide.png"
@@ -83,6 +102,7 @@ window.shader = THREE.ShaderUtils.lib["cube"];
 //window.uniforms = new THREE.UniformsUtils.clone( shader.uniforms );
 window.shader.uniforms[ "tCube" ].texture = textureCube;
 
+/*
 //Let's make a skycube!
 window.skybox = new THREE.Mesh( 
 	new THREE.CubeGeometry( 500, 500, 500, 1,1,1 ),
@@ -94,6 +114,7 @@ window.skybox = new THREE.Mesh(
 		side:THREE.BackSide
 	})
 )
+*/
 ///this is earth group
 
 	window.earthGroup = new THREE.Object3D()
@@ -101,7 +122,7 @@ window.skybox = new THREE.Mesh(
 	//Let's draw earth
 	window.earthRadius = 90
 	window.earth = new THREE.Mesh(
-		new THREE.SphereGeometry( earthRadius, 32, 32 ),
+		new THREE.SphereGeometry( earthRadius, 32, 32 ), //default radius is 50, segmentWidth, segmentHeight
 		new THREE.MeshLambertMaterial({ 
 			map: THREE.ImageUtils.loadTexture( 'media/kubr.jpg' )
 		})
@@ -110,11 +131,14 @@ window.skybox = new THREE.Mesh(
 	earth.receiveShadow = true;
 	earth.castShadow = true;
 	earthGroup.add(earth);
+	//In MeshLambertMaterial, the apparent brightness of the surface to
+	//an observer is the same regardless of the observer's angle of view
+	// 
 
 
-	//Let's add clouds to the earth group
-	//We are giving some transparency so earth is visible through the clouds
-	//Blender mode is used for this effect
+//Let's add clouds to the earth group
+//We are giving some transparency so earth is visible through the clouds
+//Blender mode is used for this effect
 	
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
@@ -127,8 +151,6 @@ window.skybox = new THREE.Mesh(
 			blendDst: THREE.SrcColorFactor,
 			blendEquation: THREE.AddEquation
 		})
-		//extra MeshLamnertMaterial parameters:
-		//color, opacity, lightMap, reflectivity(float), wireframe, 
 	)
 	clouds.position.set( 0, 0, 0 )
 	clouds.receiveShadow = true
@@ -137,6 +159,9 @@ window.skybox = new THREE.Mesh(
 
 
  ////this is Moon Group!!!
+ //why do we need a new moonGroup that contains only a mesh?
+ //by rotating a group, not a mesh, we can make our moon orbit to Earth,
+ //not rotating itself standing in one position
 	window.moonGroup = new THREE.Object3D()
 	moonGroup.rotation.x = ( 20 ).degreesToRadians()
 
@@ -155,37 +180,37 @@ window.skybox = new THREE.Mesh(
 	moon.castShadow = true;
 
 
-	window.moonSatelliteRadius = 5 ; 
-	window.moonSatellite = new THREE.Mesh(
-		new THREE.SphereGeometry (moonSatelliteRadius, 8, 8),
-		new THREE.MeshBasicMaterial({ 
-			color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
-		})
-	) 
-	moonSatellite.position.set (moonX + 80, moonY, moonZ);
-	moonSatellite.receiveShadow = true;
-	moonSatellite.castShadow = true;
+	// window.moonSatelliteRadius = 5 ; 
+	// window.moonSatellite = new THREE.Mesh(
+	// 	new THREE.SphereGeometry (moonSatelliteRadius, 8, 8),
+	// 	new THREE.MeshBasicMaterial({ 
+	// 		color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
+	// 	})
+	// ) 
+	// moonSatellite.position.set (moonX + 80, moonY, moonZ);
+	// moonSatellite.receiveShadow = true;
+	// moonSatellite.castShadow = true;
 
 	//scene.add( skybox );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
-	moonGroup.add(moonSatellite);
+	//moonGroup.add(moonSatellite);
 
 
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
 
 	earthGroup.rotation.y = ( -40 ).degreesToRadians()
-	earthGroup.rotation.z = (  23 ).degreesToRadians()
+	//earthGroup.rotation.z = (  23 ).degreesToRadians()
 
 	moon.rotation.y = ( 90 ).degreesToRadians()
 	moon.rotation.z = (  45 ).degreesToRadians()
 
 
-	moonSatellite.rotation.y = ( 90 ).degreesToRadians()
-	moonSatellite.rotation.z = (  45 ).degreesToRadians()
+	// moonSatellite.rotation.y = ( 90 ).degreesToRadians()
+	// moonSatellite.rotation.z = (  45 ).degreesToRadians()
 
 
 	loop();
@@ -199,6 +224,11 @@ window.skybox = new THREE.Mesh(
 	}
 	nextTweet();
 })
+//////////ShaderMaterial//////////////////
+//it needs VertexShader and FragmentShader
+//VertexShader has vertex point
+//and FregmentShader contains color and texture values
+
 
 ///////////////////////////////////////////
 //this is the function for real-time data// 
@@ -290,7 +320,6 @@ url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 
 function locateWithGoogleMaps( text ){	
 
-
 	//  We also need to be wary of exceeding Google’s rate limiting.
 	//  But Google seems to be much more forgiving than Twitter.
 	//  If you want to be a good citizen you should sign up for a free 
@@ -330,15 +359,7 @@ function nextTweet(){
 
 		tweetsIndex ++
 
-		//  Ideas for you crazy kids to spruce up your homework:
-		//  1. Only shine the sun on the part of Earth that is actually
-		//     currently experience daylight!
-		//  2. Rotate the globe to face the tweet you’re plotting.
-		//  3. Don’t just place the pin, but animate its appearance;
-		//     maybe it grows out of the Earth?
-		//  4. Display the contents of the tweet. I know, I know. We haven’t
-		//     even talked about text in Three.js yet. That’s why you’d get
-		//     über bragging rights.
+		
 
 		earthGroup.add( dropPin(
 
@@ -585,7 +606,8 @@ function addLights(){
 	ambient = new THREE.AmbientLight( 0xBBBBBB )
 	scene.add( ambient )	
 	
-	//  Now let's create a Directional light as our pretend sunshine.
+	// Now let's create a Directional light as our pretend sunshine.
+	// Directional light has an infinite source.
 	
 	directional = new THREE.DirectionalLight( 0xCCCCCC )
 	directional.castShadow = true;
@@ -603,4 +625,19 @@ function addLights(){
 	directional.shadowDarkness      =    0.3
 	directional.shadowMapWidth      = directional.shadowMapHeight = 2048
 	//directional.shadowCameraVisible = true
-}
+
+
+	//references
+	//point light: emanate from a particular position in all directions,
+	//regardless of all positions
+}	// spotlight: emanate from a partlcular position and in a specific directions
+
+// vertex shader to draw three vertex skeleton
+// fragment shader to draw the rest of trianglular plain inside of the three vertex
+// (think as drawing color, texture and line)
+
+// uniforms: for both of vertex and fragments shader. e.g. drawing light position
+// tend to be single value
+// attributes: for individual verteces. only for vertex
+// should match attributes array and the number of vertices
+// varings: originally for vertex but can be shared with fragments. e g . light calculation
