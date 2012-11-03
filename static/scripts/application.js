@@ -182,29 +182,16 @@ window.skybox = new THREE.Mesh(
 
 	///////macaron .dae trial//////////
 	///////////////////////////////////
-	var rose;
-
-	window.loader = new THREE.ColladaLoader();
-	loader.options.convertUpAxis = true;
-	loader.load( 'media/rose.dae', function( collada ){
-		rose = collada.scene;
-		rose.scale.x = rose.scale.y = rose.scale.z = 5;
-		rose.position.x = -310;
-		rose.position.y = 210;
-		// rose.updateMatrix();
-		// rose.receiveShadow = true;
-		// rose.castShadow = true;
-		console.log("rose macaron is ready");
-
-	});
+	
 
 	//scene.add( skybox );
-	moonGroup.add( rose );
-	//scene.add ( rose );
+	
+	//scene.add( rose );
+	//moonGroup.add( moon );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
-	moonGroup.add( moon );
+	
 	
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?

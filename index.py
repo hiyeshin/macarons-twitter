@@ -14,7 +14,7 @@ class MainHandler( webapp2.RequestHandler ):
         tmpl = os.path.join( os.path.dirname( __file__ ), 'templates/index.html' )
         tmplvars = {
 
-            'title': 'Shining Tweeting Earth'#,
+            'title': "Where're macaron lovers"#,
             #'message': samplemodule.sampleMethod( 'A sample message.' )
         }
         self.response.out.write( template.render( tmpl, tmplvars ))
