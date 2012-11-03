@@ -134,7 +134,6 @@ window.skybox = new THREE.Mesh(
 	earthGroup.add(earth);
 	//In MeshLambertMaterial, the apparent brightness of the surface to
 	//an observer is the same regardless of the observer's angle of view
-	// 
 
 
 //Let's add clouds to the earth group
@@ -180,18 +179,12 @@ window.skybox = new THREE.Mesh(
 	moon.receiveShadow = true;
 	moon.castShadow = true;
 
-	///////macaron .dae trial//////////
-	///////////////////////////////////
-	
-
 	//scene.add( skybox );
 	
-	//scene.add( rose );
 	//moonGroup.add( moon );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
-	
 	
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
@@ -227,12 +220,13 @@ function loop(){
 
 	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	//moon.rotation.y  += ( 0.02 ).degreesToRadians()
+	//rose.rotation.y  += ( 0.02 ).degreesToRadians()
 	//moon.position.x += 0.3; 
 	//moon.position.z -= 0.3;
 	//marker.position.y += 0.3;
 	
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
+	//moonGroup.rotation.z += ( 0.2 ).degreesToRadians()
 
 	render();
 	controls.update();
