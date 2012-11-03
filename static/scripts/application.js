@@ -164,7 +164,7 @@ window.skybox = new THREE.Mesh(
  //by rotating a group, not a mesh, we can make our moon orbit to Earth,
  //not rotating itself standing in one position
 	window.moonGroup = new THREE.Object3D()
-	moonGroup.rotation.x = ( 20 ).degreesToRadians()
+	moonGroup.rotation.x = ( 10 ).degreesToRadians()
 
 	//Let's draw moon
 	window.moonRadius = 15;
