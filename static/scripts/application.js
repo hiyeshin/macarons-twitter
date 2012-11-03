@@ -2,8 +2,7 @@
 ////////////Macarons Earth ver 2.0////////////
 /////////////////////////////////////////////
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
-
-//  Ideas for you crazy kids to spruce up your homework:
+// Stewart's suggestions:
 		//  1. Only shine the sun on the part of Earth that is actually
 		//     currently experience daylight!
 		//  2. Rotate the globe to face the tweet you’re plotting.
@@ -34,6 +33,7 @@ $( document ).ready( function(){
 	window.timePerTweet = (3).seconds(); // what does it mean?
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
+
 
 /////Let's make a text group!!!//////////
 /////thanks mark for teach me how to create text in an easy way!///
@@ -93,14 +93,15 @@ $( document ).ready( function(){
 ///////////////////////////////////// 
 ////////skycube
 //it's not working yet. Maybe we don't need it?///////////////////
+//Anyway I like current 2D background look.
 //////////////////////////////////
 
-window.sky = "/media/starfieldwide.png"
-window.urls = [sky, sky, sky, sky, sky, sky];
-window.textureCube = THREE.ImageUtils.loadTextureCube( urls );
-window.shader = THREE.ShaderUtils.lib["cube"];
+//window.sky = "/media/starfieldwide.png"
+//window.urls = [sky, sky, sky, sky, sky, sky];
+//window.textureCube = THREE.ImageUtils.loadTextureCube( urls );
+//window.shader = THREE.ShaderUtils.lib["cube"];
 //window.uniforms = new THREE.UniformsUtils.clone( shader.uniforms );
-window.shader.uniforms[ "tCube" ].texture = textureCube;
+//window.shader.uniforms[ "tCube" ].texture = textureCube;
 
 /*
 //Let's make a skycube!
@@ -168,45 +169,53 @@ window.skybox = new THREE.Mesh(
 	//Let's draw moon
 	window.moonRadius = 15;
 	window.moon = new THREE.Mesh(
-		new THREE.SphereGeometry (moonRadius, 100, 100),
+		new THREE.SphereGeometry (moonRadius, 32, 32),
 		new THREE.MeshLambertMaterial ({
 			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
 
 		})
 	)
-	var moonX = 100, moonY = 0, moonZ = 0;
-	moon.position.set(moonX, moonY, moonZ)
+	var moonX = 180, moonY = 0, moonZ = 0;
+	moon.position.set(moonX, moonY, moonZ);
 	moon.receiveShadow = true;
 	moon.castShadow = true;
 
+	///////macaron .dae trial//////////
+	///////////////////////////////////
+	var rose;
 
-	// window.moonSatelliteRadius = 5 ; 
-	// window.moonSatellite = new THREE.Mesh(
-	// 	new THREE.SphereGeometry (moonSatelliteRadius, 8, 8),
-	// 	new THREE.MeshBasicMaterial({ 
-	// 		color:0xFFFFFF, wireframe: true, side: THREE.DoubleSide
-	// 	})
-	// ) 
-	// moonSatellite.position.set (moonX + 80, moonY, moonZ);
-	// moonSatellite.receiveShadow = true;
-	// moonSatellite.castShadow = true;
+	window.loader = new THREE.ColladaLoader();
+	loader.options.convertUpAxis = true;
+	loader.load( 'media/rose.dae', function( collada ){
+		rose = collada.scene;
+		rose.scale.x = rose.scale.y = rose.scale.z = 5;
+		rose.position.x = -310;
+		rose.position.y = 210;
+		// rose.updateMatrix();
+		// rose.receiveShadow = true;
+		// rose.castShadow = true;
+		console.log("rose macaron is ready");
+
+	});
 
 	//scene.add( skybox );
+	moonGroup.add( rose );
+	//scene.add ( rose );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	moonGroup.add( moon );
-	//moonGroup.add(moonSatellite);
-
-
+	
 	//  But also, did you want to start out looking at a different part of
 	//  the Earth?
-
-	earthGroup.rotation.y = ( -40 ).degreesToRadians()
+	earthGroup.rotation.x = 0.41
+	//earthGroup.rotation.y = ( -40 ).degreesToRadians()
+	//moon.rotation.y = Math.PI;
+	//.rotation.y = Math.PI;
 	//earthGroup.rotation.z = (  23 ).degreesToRadians()
 
-	moon.rotation.y = ( 90 ).degreesToRadians()
-	moon.rotation.z = (  45 ).degreesToRadians()
+	//moon.rotation.y = ( 90 ).degreesToRadians()
+	//moon.rotation.z = (  45 ).degreesToRadians()
 
 
 	// moonSatellite.rotation.y = ( 90 ).degreesToRadians()
@@ -229,6 +238,97 @@ window.skybox = new THREE.Mesh(
 //VertexShader has vertex point
 //and FregmentShader contains color and texture values
 
+
+
+function loop(){
+
+	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
+	clouds.rotation.y += ( 0.05 ).degreesToRadians()
+	moon.rotation.y  += ( 0.02 ).degreesToRadians()
+	//moon.position.x += 0.3; 
+	//moon.position.z -= 0.3;
+	//marker.position.y += 0.3;
+	
+	moonGroup.rotation.y += ( 0.8 ).degreesToRadians()
+
+	render();
+	controls.update();
+	
+	window.requestAnimationFrame( loop );
+}
+
+//Let's drop the pins!
+function dropPin( latitude, longitude, color, markerLength ){
+
+	var 
+	group1 = new THREE.Object3D(),
+	group2 = new THREE.Object3D(),
+	marker = new THREE.Mesh(
+		new THREE.CubeGeometry( 1, markerLength, 1 ),
+		new THREE.MeshBasicMaterial({ 
+			color: color, wireframe: true, side: THREE.DoubleSide
+		}
+
+		)
+
+	)	
+	
+	//marker stands straight around the center point in the beginning.
+	//so we push the marker to the North Pole to stand on the surface.
+	//while (marker.position.y <=  earthRadius){
+	//marker.position.y += 0.05;
+	//}
+	marker.position.y = earthRadius;
+	
+	
+	//then rotate towards the latitude
+	group1.add( marker )
+	group1.rotation.x = ( 90 - latitude  ).degreesToRadians()
+	
+	//and then rotate followed by the longitude
+	group2.add( group1 )
+	group2.rotation.y = ( 90 + longitude ).degreesToRadians()
+
+	return group2
+}
+
+
+function dropPinhead( latitude, longitude, color ){
+
+	var 
+	group3 = new THREE.Object3D(),
+	group4 = new THREE.Object3D(),
+
+	pinhead = new THREE.Mesh(
+		new THREE.SphereGeometry(3,3,3),
+		new THREE.MeshLambertMaterial( { 
+		color: color, shading: THREE.SmoothShading, overdraw: true } )
+	)
+
+	pinhead.position.y = earthRadius + 15;
+
+	group3.add( pinhead )
+	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
+	
+
+	group4.add( group3 )
+	group4.rotation.y = ( 90 + longitude ).degreesToRadians()
+
+	return group4;
+}
+
+//  Why separate this simple line of code from the loop() function?
+//  So that our controls can also call it separately.
+
+function render(){
+	renderer.autoClear = false;
+	renderer.clear();
+
+
+	renderer.render(bgScene,bgCam);
+	renderer.render( scene, camera );
+	
+}
 
 ///////////////////////////////////////////
 //this is the function for real-time data// 
@@ -313,7 +413,6 @@ url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 		}
 	})
 }
-
 
 
 
@@ -421,95 +520,6 @@ function importTweets(){
 }
 
 
-function loop(){
-
-	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
-	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	moon.rotation.y  += ( 0.02 ).degreesToRadians()
-	moon.position.x += 0.3; 
-	moon.position.z -= 0.3;
-	//marker.position.y += 0.3;
-	
-	moonGroup.rotation.y += ( 0.8 ).degreesToRadians()
-
-	render();
-	controls.update();
-	
-	window.requestAnimationFrame( loop );
-}
-
-//Let's drop the pins!
-function dropPin( latitude, longitude, color, markerLength ){
-
-	var 
-	group1 = new THREE.Object3D(),
-	group2 = new THREE.Object3D(),
-	marker = new THREE.Mesh(
-		new THREE.CubeGeometry( 1, markerLength, 1 ),
-		new THREE.MeshBasicMaterial({ 
-			color: color, wireframe: true, side: THREE.DoubleSide
-		}
-
-		)
-
-	)	
-	
-	//marker stands straight around the center point in the beginning.
-	//so we push the marker to the North Pole to stand on the surface.
-	//while (marker.position.y <=  earthRadius){
-	//marker.position.y += 0.05;
-	//}
-	marker.position.y = earthRadius;
-	
-	
-	//then rotate towards the latitude
-	group1.add( marker )
-	group1.rotation.x = ( 90 - latitude  ).degreesToRadians()
-	
-	//and then rotate followed by the longitude
-	group2.add( group1 )
-	group2.rotation.y = ( 90 + longitude ).degreesToRadians()
-
-	return group2
-}
-
-
-function dropPinhead( latitude, longitude, color ){
-
-	var 
-	group3 = new THREE.Object3D(),
-	group4 = new THREE.Object3D(),
-
-	pinhead = new THREE.Mesh(
-		new THREE.SphereGeometry(3,3,3),
-		new THREE.MeshLambertMaterial( { 
-		color: color, shading: THREE.SmoothShading, overdraw: true } )
-	)
-
-	pinhead.position.y = earthRadius + 15;
-
-	group3.add( pinhead )
-	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
-	
-
-	group4.add( group3 )
-	group4.rotation.y = ( 90 + longitude ).degreesToRadians()
-
-	return group4;
-}
-
-//  Why separate this simple line of code from the loop() function?
-//  So that our controls can also call it separately.
-
-function render(){
-	renderer.autoClear = false;
-	renderer.clear();
-
-
-	renderer.render(bgScene,bgCam);
-	renderer.render( scene, camera );
-	
-}
 
 //  I'll leave this in for the moment for reference, but it seems to be
 //  having some issues ...
@@ -539,14 +549,11 @@ function setupThree(){
 	var
 	WIDTH      = window.innerWidth,
 	HEIGHT     = window.innerHeight,
-	// WIDTH      = 600,
-	// HEIGHT     = 600,
 	VIEW_ANGLE = 45,
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1,
 	FAR        = 6000;
 	
-
 
 	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
 	camera.position.set( 0, 0, 300 )
@@ -576,7 +583,6 @@ function setupThree(){
 
 	
 	//  document.getElementById( 'three' ).appendChild( renderer.domElement )
-
 	$( '#three' ).append( renderer.domElement )
 }
 
