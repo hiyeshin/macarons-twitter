@@ -2,7 +2,7 @@
 
 	var loader = new THREE.ColladaLoader();
 	loader.options.convertUpAxis = true;
-	loader.load( 'models/rose_big.dae', function( collada ){
+	loader.load( 'models/strawberry_big.dae', function( collada ){
 		window.rose = collada.scene;
 		//skin = collada.skins[ 0 ];
 		rose.scale.x = rose.scale.y = rose.scale.z = 15;
