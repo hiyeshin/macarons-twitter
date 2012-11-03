@@ -205,10 +205,6 @@ window.skybox = new THREE.Mesh(
 	//moon.rotation.z = (  45 ).degreesToRadians()
 
 
-	// moonSatellite.rotation.y = ( 90 ).degreesToRadians()
-	// moonSatellite.rotation.z = (  45 ).degreesToRadians()
-
-
 	loop();
 
 	//now is time for TWEETING!
@@ -231,12 +227,12 @@ function loop(){
 
 	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	moon.rotation.y  += ( 0.02 ).degreesToRadians()
+	//moon.rotation.y  += ( 0.02 ).degreesToRadians()
 	//moon.position.x += 0.3; 
 	//moon.position.z -= 0.3;
 	//marker.position.y += 0.3;
 	
-	moonGroup.rotation.y += ( 0.8 ).degreesToRadians()
+	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
 
 	render();
 	controls.update();
