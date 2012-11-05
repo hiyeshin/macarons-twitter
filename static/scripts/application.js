@@ -26,10 +26,14 @@ $( document ).ready( function(){
 	window.geocoder = new google.maps.Geocoder();
 
 	window.tweets = [];
+	window.tweetsAddress = [];
+
 	window.tweetsIndex = -1; //what does it mean?
-	window.timePerTweet = (3).seconds(); //setInterval(seconds)
+	window.tweetsAddressIndex = -1;
+
+	window.timePerTweet = (4.5).seconds(); //setInterval(seconds)
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
-								 //which is not real-time deal.
+
 
 
 /////Let's make a text group!!!//////////
@@ -105,7 +109,6 @@ $( document ).ready( function(){
 	// twitterContents.castShadow = true;
 	// textGroup.add(twitterContents);
 
-
 ///this is earth group
 
 	window.earthGroup = new THREE.Object3D()
@@ -133,7 +136,6 @@ $( document ).ready( function(){
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
-			//map: THREE.ImageUtils.loadTexture( 'media/cloudsTexture.png' ),
 			map: THREE.ImageUtils.loadTexture( 'media/world.jpg' ),
 			transparent: true,
 			blending: THREE.CustomBlending,
@@ -149,25 +151,23 @@ $( document ).ready( function(){
 
 
  ////this is Moon Group!!!
- //why do we need a new moonGroup that contains only a mesh?
- //by rotating a group, not a mesh, we can make our moon orbit to Earth,
- //not rotating itself standing in one position
+ ///////////////////////////
 	window.moonGroup = new THREE.Object3D()
 	moonGroup.rotation.x = ( 10 ).degreesToRadians()
 
 	//Let's draw moon
-	window.moonRadius = 15;
-	window.moon = new THREE.Mesh(
-		new THREE.SphereGeometry (moonRadius, 32, 32),
-		new THREE.MeshLambertMaterial ({
-			map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
+	// window.moonRadius = 15;
+	// window.moon = new THREE.Mesh(
+	// 	new THREE.SphereGeometry (moonRadius, 32, 32),
+	// 	new THREE.MeshLambertMaterial ({
+	// 		map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
 
-		})
-	)
-	var moonX = 180, moonY = 0, moonZ = 0;
-	moon.position.set(moonX, moonY, moonZ);
-	moon.receiveShadow = true;
-	moon.castShadow = true;
+	// 	})
+	// )
+	// var moonX = 180, moonY = 0, moonZ = 0;
+	// moon.position.set(moonX, moonY, moonZ);
+	// moon.receiveShadow = true;
+	// moon.castShadow = true;
 
 	scene.add( textGroup );
 	scene.add( earthGroup );
@@ -205,19 +205,20 @@ function loop(){
 	//marker.position.y += 0.3;
 	
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
-	//moonGroup.rotation.x = +0.2;
 
 	render();
 	controls.update();
 	
 	window.requestAnimationFrame( loop );
+
+
 }
 	
 
 //similar to dropPin
 function tweetTwits( location ){
 		var twitterContents = new THREE.Mesh(
-			new THREE.TextGeometry( location, {
+			new THREE.TextGeometry( location , {
 			size: 10, height: 5, curveSegments: 6, 
 	 		font: "droid sans", 
 	 		weight: "normal", style: "normal" 
@@ -230,6 +231,7 @@ function tweetTwits( location ){
 		twitterContents.receiveShadow = true;
 		twitterContents.castShadow = true;
 		textGroup.add(twitterContents);
+		//setInterval(3000);
 }
 
 
@@ -257,7 +259,7 @@ function dropPin( latitude, longitude, color, markerLength ){
 	
 	//then rotate towards the latitude
 	group1.add( marker )
-	group1.rotation.x = ( 90 - latitude  ).degreesToRadians()
+	group1.rotation.x = ( 90 - latitude ).degreesToRadians()
 	
 	//and then rotate followed by the longitude
 	group2.add( group1 )
@@ -308,20 +310,9 @@ function render(){
 //this is the function for real-time data// 
 function fetchTweets(){
 
-
-	//  Here we’re going to use jQuery ($) to make an Ajax call to the simple
-	//  version of Twitter’s API. Why the simple version? Because the simple
-	//  version doesn’t require you to setup authorization, etc.
-	//  Beware, this API version is deprecated so enjoy it while it lasts!
-
-	//  Read more on Twitter’s API page:
-	//  https://dev.twitter.com/docs/api/1
-
 	console.log( '\n\nFetching fresh tweets from Twitter.' )
 	$.ajax({
 
-//		url: 'http://search.twitter.com/search.json?geocode=0,0,6400km',
-//		url:"http://search.twitter.com/search.json?q=macaron&src=typd&geocode=0,0,6400km",
 		url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 
 		dataType: 'jsonp',
@@ -329,7 +320,6 @@ function fetchTweets(){
 
 			console.log( 'Received the following data from Twitter:' )
 			console.log( data )
-
 
 			//  If you check the console we’ve just ouput the Twitter data,
 			//  and the tweets themselves are stored in the data.results[]
@@ -351,11 +341,10 @@ function fetchTweets(){
 					})
 				}
 				else if( tweet.location ){
-					tweets.push( tweet.location );
-//					tweetAddress = window.tweet.location;
 
 					console.log( 'At least the name of the location found. will try Google Maps for:' )
 					console.log( tweet.location )
+					tweetsAddress.push( tweet.location );
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.location )
 					}, i * timePerTweet.divide(2).round() )
@@ -364,6 +353,7 @@ function fetchTweets(){
 					
 					console.log( 'Non-English data: Resorting to the ISO language code as last hope:' )
 					console.log( tweet.iso_language_code )
+					//tweets.push ( tweet.iso_language_code )
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.iso_language_code )
 					}, i * timePerTweet.divide(2).round() )
@@ -419,9 +409,10 @@ function nextTweet(){
 	var markerLength = 30;
 	//markerLength += 1;
 	
-	if( tweetsIndex + 1 < tweets.length ){
+	if( tweetsIndex + 1 < tweets.length && tweetsAddress + 1 < tweetsAddress.length ){
 
-		tweetsIndex ++
+		tweetsIndex ++;
+		tweetsAddress ++;
 
 		earthGroup.add( dropPin(
 
@@ -429,19 +420,22 @@ function nextTweet(){
 			tweets[ tweetsIndex ].longitude,
 			0x8df5ec,
 			markerLength
-		))
-
-		textGroup.add( tweetTwits(
-			tweets[ tweetsIndex ].latitude
 		));
 
 		earthGroup.add( dropPinhead(
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
 			0x8df5cc
-			//0x0000ff
 		));
 		
+		textGroup.add( tweetTwits
+			( tweetsAddress[ tweetsIndex ]
+		));
+
+		
+		// if (textGroup.add(tweetTwits( tweets[ tweetsIndex ].location))){
+		// 	console.log("it should be a right way.")
+		// }
 
 		//  I’m trying to be very mindful of Twitter’s rate limiting.
 		//  Let’s only try fetching more tweets only when we’ve exhausted our
@@ -450,7 +444,10 @@ function nextTweet(){
 		
 		//if( tweetsIndex === tweets.length - 1 ) fetchTweets()
 	}	
-	setTimeout( nextTweet, timePerTweet )
+
+	
+
+	//setInterval( nextTweet, 3000 )
 }
 
 
@@ -484,8 +481,8 @@ function importTweets(){
 
 
 
-//  I'll leave this in for the moment for reference, but it seems to be
-//  having some issues ...
+ // I'll leave this in for the moment for reference, but it seems to be
+ // having some issues ...
 
 function surfacePlot( params ){
 
@@ -506,7 +503,6 @@ function surfacePlot( params ){
 function setupThree(){
 	window.scene = new THREE.Scene();
 
-	//these variables would define the dimensions of the camera's view
 	var
 	WIDTH      = window.innerWidth,
 	HEIGHT     = window.innerHeight,
@@ -543,6 +539,7 @@ function setupThree(){
 	
 	//  document.getElementById( 'three' ).appendChild( renderer.domElement )
 	$( '#three' ).append( renderer.domElement )
+
 }
 
 
