@@ -15,9 +15,6 @@
 //functions to think about:
 //lookat.OBJECT3D (facing only a certain point)
 
-//pseudo-code
-//add macarons by using CylinderGeometry and ExtrudeGeometry?
-//and add macarons group and substitude with moon
 //sunlight would be nicer if I use point light? (source: webGL book)
 
 $( document ).ready( function(){
@@ -30,7 +27,7 @@ $( document ).ready( function(){
 
 	window.tweets = [];
 	window.tweetsIndex = -1; //what does it mean?
-	window.timePerTweet = (3).seconds(); // what does it mean?
+	window.timePerTweet = (3).seconds(); //setInterval(seconds)
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 								 //which is not real-time deal.
 
@@ -74,48 +71,41 @@ $( document ).ready( function(){
 	textGroup.add(plusSign);
 
 //////////////3. "twitter"
-	window.twitterLogo = new THREE.Mesh(
-		new THREE.TextGeometry("twitter", {
-			size: 10, height: 5, curveSegments: 6, 
-			font: "droid sans", 
-			weight: "normal", style: "normal" 
-		}),
-		new THREE.MeshPhongMaterial({ 
-			color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
-		})//Phong Material has a smooth, non-angular texture
-	)
+	// window.twitterLogo = new THREE.Mesh(
+	// 	new THREE.TextGeometry("twitter", {
+	// 		size: 10, height: 5, curveSegments: 6, 
+	// 		font: "droid sans", 
+	// 		weight: "normal", style: "normal" 
+	// 	}),
+	// 	new THREE.MeshPhongMaterial({ 
+	// 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
+	// 	})//Phong Material has a smooth, non-angular texture
+	// )
 
-	twitterLogo.position.set (30,110,0);
-	twitterLogo.receiveShadow = true;
-	twitterLogo.castShadow = true;
-	textGroup.add(twitterLogo);
+	// twitterLogo.position.set (30,110,0);
+	// twitterLogo.receiveShadow = true;
+	// twitterLogo.castShadow = true;
+	// textGroup.add(twitterLogo);
 
-///////////////////////////////////// 
-////////skycube
-//it's not working yet. Maybe we don't need it?///////////////////
-//Anyway I like current 2D background look.
-//////////////////////////////////
 
-//window.sky = "/media/starfieldwide.png"
-//window.urls = [sky, sky, sky, sky, sky, sky];
-//window.textureCube = THREE.ImageUtils.loadTextureCube( urls );
-//window.shader = THREE.ShaderUtils.lib["cube"];
-//window.uniforms = new THREE.UniformsUtils.clone( shader.uniforms );
-//window.shader.uniforms[ "tCube" ].texture = textureCube;
+//twitter content trials
+	// window.twitterContents = new THREE.Mesh(
+	// 	new THREE.TextGeometry(window.tweetLocation, {
+	// 		size: 10, height: 5, curveSegments: 6, 
+	// 		font: "droid sans", 
+	// 		weight: "normal", style: "normal" 
+	// 	}),
+	// 	new THREE.MeshPhongMaterial({ 
+	// 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
+	// 	})//Phong Material has a smooth, non-angular texture
+	// )
 
-/*
-//Let's make a skycube!
-window.skybox = new THREE.Mesh( 
-	new THREE.CubeGeometry( 500, 500, 500, 1,1,1 ),
-		new THREE.ShaderMaterial({
-		fragmentShader: shader.fragmentShader,
-		vertexShader: shader.vertexShader,
-		uniforms: shader.uniforms,
-		depthWrite: false,
-		side:THREE.BackSide
-	})
-)
-*/
+	// twitterContents.position.set (30,110,0);
+	// twitterContents.receiveShadow = true;
+	// twitterContents.castShadow = true;
+	// textGroup.add(twitterContents);
+
+
 ///this is earth group
 
 	window.earthGroup = new THREE.Object3D()
@@ -179,9 +169,6 @@ window.skybox = new THREE.Mesh(
 	moon.receiveShadow = true;
 	moon.castShadow = true;
 
-	//scene.add( skybox );
-	
-	//moonGroup.add( moon );
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
@@ -196,8 +183,6 @@ window.skybox = new THREE.Mesh(
 
 	//moon.rotation.y = ( 90 ).degreesToRadians()
 	//moon.rotation.z = (  45 ).degreesToRadians()
-
-
 	loop();
 
 	//now is time for TWEETING!
@@ -209,12 +194,6 @@ window.skybox = new THREE.Mesh(
 	}
 	nextTweet();
 })
-//////////ShaderMaterial//////////////////
-//it needs VertexShader and FragmentShader
-//VertexShader has vertex point
-//and FregmentShader contains color and texture values
-
-
 
 function loop(){
 
@@ -226,13 +205,33 @@ function loop(){
 	//marker.position.y += 0.3;
 	
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
-	//moonGroup.rotation.z += ( 0.2 ).degreesToRadians()
+	//moonGroup.rotation.x = +0.2;
 
 	render();
 	controls.update();
 	
 	window.requestAnimationFrame( loop );
 }
+	
+
+//similar to dropPin
+function tweetTwits( location ){
+		var twitterContents = new THREE.Mesh(
+			new THREE.TextGeometry( location, {
+			size: 10, height: 5, curveSegments: 6, 
+	 		font: "droid sans", 
+	 		weight: "normal", style: "normal" 
+	 	}),
+	 	new THREE.MeshPhongMaterial({ 
+	 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
+	 	}));
+
+	 	twitterContents.position.set (30,110,0);
+		twitterContents.receiveShadow = true;
+		twitterContents.castShadow = true;
+		textGroup.add(twitterContents);
+}
+
 
 //Let's drop the pins!
 function dropPin( latitude, longitude, color, markerLength ){
@@ -245,9 +244,7 @@ function dropPin( latitude, longitude, color, markerLength ){
 		new THREE.MeshBasicMaterial({ 
 			color: color, wireframe: true, side: THREE.DoubleSide
 		}
-
 		)
-
 	)	
 	
 	//marker stands straight around the center point in the beginning.
@@ -320,21 +317,12 @@ function fetchTweets(){
 	//  Read more on Twitter’s API page:
 	//  https://dev.twitter.com/docs/api/1
 
-	//  WARNING: With this API you are only allowed 150 requests per hour!!
-	//  This is tracked by IP address, so be wary of testing on NYU’s network.
-	//  You can check your rate limit status at anytime by pinging this
-	//  address, most easily done by just visiting it in your browser:
-	//  https://api.twitter.com/1/account/rate_limit_status.json
-
 	console.log( '\n\nFetching fresh tweets from Twitter.' )
 	$.ajax({
 
 //		url: 'http://search.twitter.com/search.json?geocode=0,0,6400km',
-//	url:"http://search.twitter.com/search.json?q=macaron&src=typd&geocode=0,0,6400km",
-url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
-		//  We have to use the datatype 'JSONp' (JavaScript Object Notation with
-		//  Padding) in order to safely fetch data that’s not coming from our own
-		//  domain name. (Basically, side-stepping a browser security issue.)
+//		url:"http://search.twitter.com/search.json?q=macaron&src=typd&geocode=0,0,6400km",
+		url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 
 		dataType: 'jsonp',
 		success: function( data ){
@@ -363,7 +351,9 @@ url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 					})
 				}
 				else if( tweet.location ){
-					
+					tweets.push( tweet.location );
+//					tweetAddress = window.tweet.location;
+
 					console.log( 'At least the name of the location found. will try Google Maps for:' )
 					console.log( tweet.location )
 					setTimeout( function(){
@@ -390,8 +380,6 @@ url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 		}
 	})
 }
-
-
 
 
 function locateWithGoogleMaps( text ){	
@@ -435,18 +423,17 @@ function nextTweet(){
 
 		tweetsIndex ++
 
-		
-
 		earthGroup.add( dropPin(
 
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
 			0x8df5ec,
-
 			markerLength
-		)
-		
-		);
+		))
+
+		textGroup.add( tweetTwits(
+			tweets[ tweetsIndex ].latitude
+		));
 
 		earthGroup.add( dropPinhead(
 			tweets[ tweetsIndex ].latitude,
@@ -469,7 +456,6 @@ function nextTweet(){
 
 
 function exportTweets(){
-
 
 	//  Another way to be mindful of rate limiting is to PLAN AHEAD.
 	//  Why not save out this data you’ve already acquired?
@@ -518,8 +504,6 @@ function surfacePlot( params ){
 }
 
 function setupThree(){
-
-	
 	window.scene = new THREE.Scene();
 
 	//these variables would define the dimensions of the camera's view
@@ -533,7 +517,7 @@ function setupThree(){
 	
 
 	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
-	camera.position.set( 0, 0, 300 )
+	camera.position.set(0,0, 300 )
 	camera.lookAt( scene.position )
 	scene.add( camera )
 
@@ -556,8 +540,6 @@ function setupThree(){
 	renderer.setSize( window.innerWidth, window.innerHeight )
 	renderer.shadowMapEnabled = true
 	renderer.shadowMapSoft = true
-
-
 	
 	//  document.getElementById( 'three' ).appendChild( renderer.domElement )
 	$( '#three' ).append( renderer.domElement )

@@ -1,3 +1,6 @@
+//macarons models were found on the site below:
+//http://sketchup.google.com/3dwarehouse/details?mid=f4dd41e502bea71db6fb0dc079377ea1&ct=mdrm
+
 	var rose;
 
 	var loader = new THREE.ColladaLoader();
@@ -24,4 +27,26 @@
 		moonGroup.add( rose );
 	});
 
+
+	// var phMacarons;
 	
+
+	// loader.load('models/chocolate_big.dae', function (collada ){
+	// 	var group5 = new THREE.Object3D();
+	// 	var group6 = new THREE.Object3D();
+
+	// 	window.phMacarons = collada.scene;
+	// 	phMacarons.scale.x = phMacarons.scale.y = phMacarons.scale.z = 1;
+	// 	phMacarons.position.y = 105;
+
+	// 	group5.add( phMacarons )
+	//    	group5.rotation.x = ( 90 - latitude  ).degreesToRadians()
+	
+
+	// 	group6.add( group5 )
+	// 	group6.rotation.y = ( 90 + longitude ).degreesToRadians()
+
+	// 	return group6; 
+	// })
+
+	// 
