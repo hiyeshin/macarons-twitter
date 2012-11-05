@@ -18,13 +18,12 @@
 		rose.updateMatrix();
 
 		window.macaronsShadow = new THREE.SceneUtils.traverseHierarchy ( rose, function (child) {
-		child.castShadow = true;
-		child.receiveShadow = true;
-	});
-	
-	
-		console.log(rose);
+			child.castShadow = true;
+			child.receiveShadow = true;
+		});
+		
 		moonGroup.add( rose );
+
 	});
 
 
@@ -49,4 +48,20 @@
 	// 	return group6; 
 	// })
 
-	// 
+	//
+
+
+	//Let's draw moon
+	// window.moonRadius = 15;
+	// window.moon = new THREE.Mesh(
+	// 	new THREE.SphereGeometry (moonRadius, 32, 32),
+	// 	new THREE.MeshLambertMaterial ({
+	// 		map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
+
+	// 	})
+	// )
+	// var moonX = 180, moonY = 0, moonZ = 0;
+	// moon.position.set(moonX, moonY, moonZ);
+	// moon.receiveShadow = true;
+	// moon.castShadow = true;
+ 

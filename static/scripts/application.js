@@ -31,7 +31,7 @@ $( document ).ready( function(){
 	window.tweetsIndex = -1; //what does it mean?
 	window.tweetsAddressIndex = -1;
 
-	window.timePerTweet = (4.5).seconds(); //setInterval(seconds)
+	window.timePerTweet = (3).seconds(); //setInterval(seconds)
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 
 
@@ -59,7 +59,7 @@ $( document ).ready( function(){
 
 /////////////2. "+" sign
 	window.plusSign = new THREE.Mesh(
-		new THREE.TextGeometry("+", {
+		new THREE.TextGeometry("at", {
 			size: 12, height: 5, curveSegments: 6, 
 			font: "droid serif", 
 			weight: "normal", style: "normal" 
@@ -91,23 +91,6 @@ $( document ).ready( function(){
 	// twitterLogo.castShadow = true;
 	// textGroup.add(twitterLogo);
 
-
-//twitter content trials
-	// window.twitterContents = new THREE.Mesh(
-	// 	new THREE.TextGeometry(window.tweetLocation, {
-	// 		size: 10, height: 5, curveSegments: 6, 
-	// 		font: "droid sans", 
-	// 		weight: "normal", style: "normal" 
-	// 	}),
-	// 	new THREE.MeshPhongMaterial({ 
-	// 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
-	// 	})//Phong Material has a smooth, non-angular texture
-	// )
-
-	// twitterContents.position.set (30,110,0);
-	// twitterContents.receiveShadow = true;
-	// twitterContents.castShadow = true;
-	// textGroup.add(twitterContents);
 
 ///this is earth group
 
@@ -150,24 +133,10 @@ $( document ).ready( function(){
 	earthGroup.add( clouds )
 
 
- ////this is Moon Group!!!
+ ////this is Moon Group!!! where our macarons live
  ///////////////////////////
 	window.moonGroup = new THREE.Object3D()
 	moonGroup.rotation.x = ( 10 ).degreesToRadians()
-
-	//Let's draw moon
-	// window.moonRadius = 15;
-	// window.moon = new THREE.Mesh(
-	// 	new THREE.SphereGeometry (moonRadius, 32, 32),
-	// 	new THREE.MeshLambertMaterial ({
-	// 		map: THREE.ImageUtils.loadTexture ('media/moonTexture.png')
-
-	// 	})
-	// )
-	// var moonX = 180, moonY = 0, moonZ = 0;
-	// moon.position.set(moonX, moonY, moonZ);
-	// moon.receiveShadow = true;
-	// moon.castShadow = true;
 
 	scene.add( textGroup );
 	scene.add( earthGroup );
@@ -192,7 +161,9 @@ $( document ).ready( function(){
 		console.log ( "If we want real time data, we have to change TWEETAPIARMED variable");
 		importTweets();
 	}
+
 	nextTweet();
+	console.log(tweetsAddress);
 })
 
 function loop(){
@@ -210,14 +181,14 @@ function loop(){
 	controls.update();
 	
 	window.requestAnimationFrame( loop );
-
-
+	console.log(tweetsAddress[ tweetsIndex ]);
 }
 	
 
 //similar to dropPin
 function tweetTwits( location ){
 		var twitterContents = new THREE.Mesh(
+			//new THREE.TextGeometry('"'+ location +'"', {
 			new THREE.TextGeometry( location , {
 			size: 10, height: 5, curveSegments: 6, 
 	 		font: "droid sans", 
@@ -249,11 +220,6 @@ function dropPin( latitude, longitude, color, markerLength ){
 		)
 	)	
 	
-	//marker stands straight around the center point in the beginning.
-	//so we push the marker to the North Pole to stand on the surface.
-	//while (marker.position.y <=  earthRadius){
-	//marker.position.y += 0.05;
-	//}
 	marker.position.y = earthRadius;
 	
 	
@@ -338,13 +304,14 @@ function fetchTweets(){
 
 						latitude:  tweet.geo.coordinates[ 0 ],
 						longitude: tweet.geo.coordinates[ 1 ]
+
 					})
 				}
 				else if( tweet.location ){
 
 					console.log( 'At least the name of the location found. will try Google Maps for:' )
-					console.log( tweet.location )
 					tweetsAddress.push( tweet.location );
+					console.log(tweetsAddress);
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.location )
 					}, i * timePerTweet.divide(2).round() )
@@ -407,9 +374,8 @@ function locateWithGoogleMaps( text ){
 
 function nextTweet(){
 	var markerLength = 30;
-	//markerLength += 1;
 	
-	if( tweetsIndex + 1 < tweets.length && tweetsAddress + 1 < tweetsAddress.length ){
+	if( tweetsIndex + 1 < tweets.length  ){
 
 		tweetsIndex ++;
 		tweetsAddress ++;
@@ -428,15 +394,11 @@ function nextTweet(){
 			0x8df5cc
 		));
 		
-		textGroup.add( tweetTwits
-			( tweetsAddress[ tweetsIndex ]
+		textGroup.add( tweetTwits(
+		 	//tweetsAddress[ tweetsIndex ]
+		 	tweets[ tweetsIndex ].latitude
 		));
-
 		
-		// if (textGroup.add(tweetTwits( tweets[ tweetsIndex ].location))){
-		// 	console.log("it should be a right way.")
-		// }
-
 		//  I’m trying to be very mindful of Twitter’s rate limiting.
 		//  Let’s only try fetching more tweets only when we’ve exhausted our
 		//  tweets[] array supply.
@@ -447,7 +409,8 @@ function nextTweet(){
 
 	
 
-	//setInterval( nextTweet, 3000 )
+	setTimeout( nextTweet, timePerTweet )
+
 }
 
 
@@ -478,8 +441,6 @@ function exportTweets(){
 function importTweets(){
 	tweets = tweets.concat(database);
 }
-
-
 
  // I'll leave this in for the moment for reference, but it seems to be
  // having some issues ...
