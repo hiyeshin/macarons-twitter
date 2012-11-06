@@ -110,11 +110,6 @@ $( document ).ready( function(){
 	earthGroup.add(earth);
 	//In MeshLambertMaterial, the apparent brightness of the surface to
 	//an observer is the same regardless of the observer's angle of view
-
-
-//Let's add clouds to the earth group
-//We are giving some transparency so earth is visible through the clouds
-//Blender mode is used for this effect
 	
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
@@ -133,8 +128,8 @@ $( document ).ready( function(){
 	earthGroup.add( clouds )
 
 
- ////this is Moon Group!!! where our macarons live
- ///////////////////////////
+ ////this is Moon Group where our macarons live
+ 
 	window.moonGroup = new THREE.Object3D()
 	moonGroup.rotation.x = ( 10 ).degreesToRadians()
 
@@ -142,27 +137,25 @@ $( document ).ready( function(){
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 	
-	//  But also, did you want to start out looking at a different part of
-	//  the Earth?
 	earthGroup.rotation.x = 0.41
-	//earthGroup.rotation.y = ( -40 ).degreesToRadians()
-	//moon.rotation.y = Math.PI;
-	//.rotation.y = Math.PI;
-	//earthGroup.rotation.z = (  23 ).degreesToRadians()
-
-	//moon.rotation.y = ( 90 ).degreesToRadians()
-	//moon.rotation.z = (  45 ).degreesToRadians()
+	
 	loop();
 
 	//now is time for TWEETING!
-	if ( tweetApiArmed ) fetchTweets();
+	if ( tweetApiArmed ) {
+		fetchTweets();
+		fetchTweetsAddress();
+	}
+		
 	else {
 		console.log( "This is not a real-time. Now we are processing data from database file. ");
 		console.log ( "If we want real time data, we have to change TWEETAPIARMED variable");
 		importTweets();
+		importTweetsAddress();
 	}
 
 	nextTweet();
+	nextTweetsAddress();
 	console.log(tweetsAddress);
 })
 
@@ -181,7 +174,7 @@ function loop(){
 	controls.update();
 	
 	window.requestAnimationFrame( loop );
-	console.log(tweetsAddress[ tweetsIndex ]);
+	//console.log(tweetsAddress[ tweetsIndex ]);
 }
 	
 
@@ -266,7 +259,6 @@ function render(){
 	renderer.autoClear = false;
 	renderer.clear();
 
-
 	renderer.render(bgScene,bgCam);
 	renderer.render( scene, camera );
 	
@@ -310,8 +302,9 @@ function fetchTweets(){
 				else if( tweet.location ){
 
 					console.log( 'At least the name of the location found. will try Google Maps for:' )
-					tweetsAddress.push( tweet.location );
-					console.log(tweetsAddress);
+					// tweetsAddress.push( (tweet.location).toString() );
+					//tweetsAddress.push(tweet.location);
+					//console.log(tweetsAddress);
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.location )
 					}, i * timePerTweet.divide(2).round() )
@@ -328,6 +321,33 @@ function fetchTweets(){
 				else {
 
 					console.log( ':( We couldn’t find any useful data in this tweet.' )
+				}
+			})
+		},
+		error: function(){
+
+			console.log( 'Oops. Something went wrong requesting data from Twitter.' )
+		}
+	})
+}
+
+function fetchTweetsAddress(){
+
+	//console.log( '\n\nFetching fresh tweets from Twitter.' )
+	$.ajax({
+		url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
+
+		dataType: 'jsonp',
+		success: function( dataAddress ){
+			console.log( dataAddress )
+
+			dataAddress.results.forEach( function( tweet, i ){
+
+				if( tweet.location ){
+					tweetsAddress.push(tweet.location);
+					setTimeout( function(){
+						locateWithGoogleMaps( tweet.location )
+					}, i * timePerTweet.divide(2).round() )
 				}
 			})
 		},
@@ -378,10 +398,9 @@ function nextTweet(){
 	if( tweetsIndex + 1 < tweets.length  ){
 
 		tweetsIndex ++;
-		tweetsAddress ++;
+		
 
 		earthGroup.add( dropPin(
-
 			tweets[ tweetsIndex ].latitude,
 			tweets[ tweetsIndex ].longitude,
 			0x8df5ec,
@@ -395,8 +414,8 @@ function nextTweet(){
 		));
 		
 		textGroup.add( tweetTwits(
-		 	//tweetsAddress[ tweetsIndex ]
-		 	tweets[ tweetsIndex ].latitude
+		 	tweetsAddress[ tweetsIndex ]
+		 	//tweets[ tweetsIndex ].latitude
 		));
 		
 		//  I’m trying to be very mindful of Twitter’s rate limiting.
@@ -411,6 +430,18 @@ function nextTweet(){
 
 	setTimeout( nextTweet, timePerTweet )
 
+}
+
+function nextTweetsAddress(){
+	if (tweetsAddressIndex + 1 < tweetsAddress.length){
+		tweetsAddress ++;
+
+		textGroup.add( tweetTwits(
+		 	tweetsAddress[ tweetsIndex ]
+		 	//tweets[ tweetsIndex ].latitude
+		));
+
+	}
 }
 
 
@@ -435,7 +466,6 @@ function exportTweets(){
 	console.log( data )
 }
 
-
 //If we export the data and then save it into the database file,
 //then we can use that data here.
 function importTweets(){
@@ -444,6 +474,27 @@ function importTweets(){
 
  // I'll leave this in for the moment for reference, but it seems to be
  // having some issues ...
+
+
+
+ function exportTweetsAddress(){
+ 	var dataAddress = 'databaseAddress = databaseADdress.concat(['
+ 	tweetsAddress.forEach(function(tweet, i){
+ 		dataAddress += '\n {'
+ 		dataAddress += '\n location: ' + tweet.tweetAddress
+ 		dataAddress += '\n }'
+ 		if (i < tweetsAddress.length -1 ) dataAddress += ','
+ 	})
+ 	dataAddress += '\n])'
+	console.log (dataAddress)
+ }
+
+ function importTweetsAddress(){
+ 	tweetsAddress = tweetsAddress.concat(databaseAddress);
+ }
+
+
+
 
 function surfacePlot( params ){
 
