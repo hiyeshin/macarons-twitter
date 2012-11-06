@@ -27,28 +27,26 @@
 	});
 
 
-	// var phMacarons;
-	
+	// var chocolate;
+	// var loader2 = new THREE.ColladaLoader();
+	// loader2.load('models/chocolate_big.dae', function ( collada ){
 
-	// loader.load('models/chocolate_big.dae', function (collada ){
-	// 	var group5 = new THREE.Object3D();
-	// 	var group6 = new THREE.Object3D();
+	// 	window.chocolate = collada.scene;
+	// 	chocolate.scale.x = chocolate.scale.y = chocolate.scale.z = 5;
 
-	// 	window.phMacarons = collada.scene;
-	// 	phMacarons.scale.x = phMacarons.scale.y = phMacarons.scale.z = 1;
-	// 	phMacarons.position.y = 105;
+	// 	chocolate.position.x = 120;
+	// 	chocolate.position.y = -125;
+	// 	chocolate.position.z = 0;
 
-	// 	group5.add( phMacarons )
-	//    	group5.rotation.x = ( 90 - latitude  ).degreesToRadians()
-	
+	// 	chocolate.updateMatrix();
 
-	// 	group6.add( group5 )
-	// 	group6.rotation.y = ( 90 + longitude ).degreesToRadians()
+	// 	});
 
-	// 	return group6; 
+	// 	moonGroup.add( chocolate );
+
 	// })
 
-	//
+	
 
 
 	//Let's draw moon

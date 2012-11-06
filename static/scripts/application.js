@@ -18,7 +18,7 @@
 //sunlight would be nicer if I use point light? (source: webGL book)
 
 $( document ).ready( function(){
-	
+
 	setupThree();
 	addLights();
 	addControls();
@@ -39,6 +39,7 @@ $( document ).ready( function(){
 /////Let's make a text group!!!//////////
 /////thanks mark for teach me how to create text in an easy way!///
 	window.textGroup = new THREE.Object3D();
+	textGroup.matrixAutoUpdate = false;
 
 //////////1. twitter search word: currently macarons ///////////////////
 	window.twitterWord = new THREE.Mesh(
@@ -110,7 +111,7 @@ $( document ).ready( function(){
 	earthGroup.add(earth);
 	//In MeshLambertMaterial, the apparent brightness of the surface to
 	//an observer is the same regardless of the observer's angle of view
-	
+
 	window.clouds = new THREE.Mesh(
 		new THREE.SphereGeometry( earthRadius + 2, 32, 32 ),
 		new THREE.MeshLambertMaterial({ 
@@ -136,9 +137,9 @@ $( document ).ready( function(){
 	scene.add( textGroup );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
-	
+
 	earthGroup.rotation.x = 0.41
-	
+
 	loop();
 
 	//now is time for TWEETING!
@@ -146,7 +147,7 @@ $( document ).ready( function(){
 		fetchTweets();
 		fetchTweetsAddress();
 	}
-		
+
 	else {
 		console.log( "This is not a real-time. Now we are processing data from database file. ");
 		console.log ( "If we want real time data, we have to change TWEETAPIARMED variable");
@@ -167,21 +168,21 @@ function loop(){
 	//moon.position.x += 0.3; 
 	//moon.position.z -= 0.3;
 	//marker.position.y += 0.3;
-	
+
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
 
 	render();
 	controls.update();
-	
+	//nextTweet.update();
+
 	window.requestAnimationFrame( loop );
-	//console.log(tweetsAddress[ tweetsIndex ]);
-}
 	
+}
+
 
 //similar to dropPin
 function tweetTwits( location ){
 		var twitterContents = new THREE.Mesh(
-			//new THREE.TextGeometry('"'+ location +'"', {
 			new THREE.TextGeometry( location , {
 			size: 10, height: 5, curveSegments: 6, 
 	 		font: "droid sans", 
@@ -212,14 +213,14 @@ function dropPin( latitude, longitude, color, markerLength ){
 		}
 		)
 	)	
-	
+
 	marker.position.y = earthRadius;
-	
-	
+
+
 	//then rotate towards the latitude
 	group1.add( marker )
 	group1.rotation.x = ( 90 - latitude ).degreesToRadians()
-	
+
 	//and then rotate followed by the longitude
 	group2.add( group1 )
 	group2.rotation.y = ( 90 + longitude ).degreesToRadians()
@@ -244,7 +245,7 @@ function dropPinhead( latitude, longitude, color ){
 
 	group3.add( pinhead )
 	group3.rotation.x = ( 90 - latitude  ).degreesToRadians()
-	
+
 
 	group4.add( group3 )
 	group4.rotation.y = ( 90 + longitude ).degreesToRadians()
@@ -261,7 +262,7 @@ function render(){
 
 	renderer.render(bgScene,bgCam);
 	renderer.render( scene, camera );
-	
+
 }
 
 ///////////////////////////////////////////
@@ -284,12 +285,12 @@ function fetchTweets(){
 			//  array which we will loop through now:
 
 			data.results.forEach( function( tweet, i ){
-				
+
 				console.log( '\nInspecting tweet #'+ (i+1) +' of '+ data.results.length +'.' )
 				if( tweet.geo && 
 					tweet.geo.coordinates && 
 					tweet.geo.coordinates.type === 'Point' ){
-					
+
 					console.log( 'Yay! Twitter had the latitude and longitude:' )
 					console.log( tweet.geo )
 					tweets.push({
@@ -310,7 +311,7 @@ function fetchTweets(){
 					}, i * timePerTweet.divide(2).round() )
 				}
 				else if( tweet.iso_language_code ){
-					
+
 					console.log( 'Non-English data: Resorting to the ISO language code as last hope:' )
 					console.log( tweet.iso_language_code )
 					//tweets.push ( tweet.iso_language_code )
@@ -369,7 +370,7 @@ function locateWithGoogleMaps( text ){
 
 	//  For more on the geocoding service that we’re using see here:
 	//  https://developers.google.com/maps/documentation/javascript/geocoding
-	
+
 	geocoder.geocode( { 'address': text }, function( results, status ){
 
 		if( status == google.maps.GeocoderStatus.OK ){
@@ -394,11 +395,11 @@ function locateWithGoogleMaps( text ){
 
 function nextTweet(){
 	var markerLength = 30;
-	
+
 	if( tweetsIndex + 1 < tweets.length  ){
 
 		tweetsIndex ++;
-		
+
 
 		earthGroup.add( dropPin(
 			tweets[ tweetsIndex ].latitude,
@@ -412,37 +413,57 @@ function nextTweet(){
 			tweets[ tweetsIndex ].longitude,
 			0x8df5cc
 		));
-		
+
 		textGroup.add( tweetTwits(
 		 	tweetsAddress[ tweetsIndex ]
 		 	//tweets[ tweetsIndex ].latitude
 		));
+
+
 		
+
+		textGroup.updateMatrix();
+
+		//setTimeout ( THREE.SceneUtils.traverseHierarchy( object, function ( object ) { object.visible = false; } );)
+
+		
+
 		//  I’m trying to be very mindful of Twitter’s rate limiting.
 		//  Let’s only try fetching more tweets only when we’ve exhausted our
 		//  tweets[] array supply.
 		//  But leave this commented out when testing!
-		
+
 		//if( tweetsIndex === tweets.length - 1 ) fetchTweets()
 	}	
 
-	
-
-	setTimeout( nextTweet, timePerTweet )
+	//setTimeout(scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
+	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
+	//setInterval(temporaryEraser, 2000);
+	setTimeout( nextTweet, 3000 );
+	//scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] ));
+		 	//tweets[ tweetsIndex ].latitude));
 
 }
 
-function nextTweetsAddress(){
-	if (tweetsAddressIndex + 1 < tweetsAddress.length){
-		tweetsAddress ++;
+//window.
 
-		textGroup.add( tweetTwits(
-		 	tweetsAddress[ tweetsIndex ]
-		 	//tweets[ tweetsIndex ].latitude
-		));
-
-	}
+function temporaryEraser( ){
+	 scene.remove( twitterContents);
+ 	 setTimeout( temporaryEraser, 3500 );
 }
+// function nextTweetsAddress(){
+// 	if (tweetsAddressIndex + 1 < tweetsAddress.length){
+// 		tweetsAddress ++;
+
+// 		textGroup.add( tweetTwits(
+// 		 	tweetsAddress[ tweetsIndex ]
+// 		 	//tweets[ tweetsIndex ].latitude
+// 		));
+
+// 	}
+// 	setTimeout( nextTweet, timePerTweet )
+// 	console.log("set time out")
+// }
 
 
 
@@ -522,7 +543,7 @@ function setupThree(){
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1,
 	FAR        = 6000;
-	
+
 
 	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
 	camera.position.set(0,0, 300 )
@@ -543,12 +564,12 @@ function setupThree(){
 	window.bgCam = new THREE.Camera();
 	bgScene.add(bgCam);
 	bgScene.add(bg);
-	
+
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
 	renderer.setSize( window.innerWidth, window.innerHeight )
 	renderer.shadowMapEnabled = true
 	renderer.shadowMapSoft = true
-	
+
 	//  document.getElementById( 'three' ).appendChild( renderer.domElement )
 	$( '#three' ).append( renderer.domElement )
 
@@ -574,15 +595,15 @@ function addControls(){
 
 
 function addLights(){
-	
+
 	var ambient, directional;
-	
+
 	ambient = new THREE.AmbientLight( 0xBBBBBB )
 	scene.add( ambient )	
-	
+
 	// Now let's create a Directional light as our pretend sunshine.
 	// Directional light has an infinite source.
-	
+
 	directional = new THREE.DirectionalLight( 0xCCCCCC )
 	directional.castShadow = true;
 	scene.add( directional );
@@ -605,13 +626,3 @@ function addLights(){
 	//point light: emanate from a particular position in all directions,
 	//regardless of all positions
 }	// spotlight: emanate from a partlcular position and in a specific directions
-
-// vertex shader to draw three vertex skeleton
-// fragment shader to draw the rest of trianglular plain inside of the three vertex
-// (think as drawing color, texture and line)
-
-// uniforms: for both of vertex and fragments shader. e.g. drawing light position
-// tend to be single value
-// attributes: for individual verteces. only for vertex
-// should match attributes array and the number of vertices
-// varings: originally for vertex but can be shared with fragments. e g . light calculation
