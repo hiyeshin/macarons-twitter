@@ -5,7 +5,8 @@ body
 	
 	font-size:   12px;
 	line-height: 20px;
-		overflow: hidden;
+	overflow: hidden;
+	
 }
 footer
 {	position: absolute;

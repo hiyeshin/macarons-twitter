@@ -445,8 +445,6 @@ function nextTweet(){
 
 }
 
-//window.
-
 function temporaryEraser( ){
 	 scene.remove( twitterContents);
  	 setTimeout( temporaryEraser, 3500 );
