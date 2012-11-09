@@ -8,14 +8,14 @@
 		//  2. Rotate the globe to face the tweet you’re plotting.
 		//  3. Don’t just place the pin, but animate its appearance;
 		//     maybe it grows out of the Earth?
-		//  4. Display the contents of the tweet. I know, I know. We haven’t
-		//     even talked about text in Three.js yet. That’s why you’d get
-		//     über bragging rights.
+		
 
-//functions to think about:
-//lookat.OBJECT3D (facing only a certain point)
+		//mark's suggestion: make the last text's opacity as 0
 
-//sunlight would be nicer if I use point light? (source: webGL book)
+	//functions to think about:
+	//lookat.OBJECT3D (facing only a certain point)
+
+	//sunlight would be nicer if I use point light? (source: webGL book)
 
 $( document ).ready( function(){
 
@@ -33,8 +33,6 @@ $( document ).ready( function(){
 
 	window.timePerTweet = (3).seconds(); //setInterval(seconds)
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
-
-
 
 /////Let's make a text group!!!//////////
 /////thanks mark for teach me how to create text in an easy way!///
@@ -75,7 +73,7 @@ $( document ).ready( function(){
 	plusSign.castShadow = true;
 	textGroup.add(plusSign);
 
-//////////////3. "twitter"
+	//////////////3. "twitter"
 	// window.twitterLogo = new THREE.Mesh(
 	// 	new THREE.TextGeometry("twitter", {
 	// 		size: 10, height: 5, curveSegments: 6, 
@@ -156,7 +154,7 @@ $( document ).ready( function(){
 	}
 
 	nextTweet();
-	nextTweetsAddress();
+	//nextTweetsAddress();
 	console.log(tweetsAddress);
 })
 
@@ -164,21 +162,15 @@ function loop(){
 
 	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
 	clouds.rotation.y += ( 0.05 ).degreesToRadians()
-	//rose.rotation.y  += ( 0.02 ).degreesToRadians()
-	//moon.position.x += 0.3; 
-	//moon.position.z -= 0.3;
-	//marker.position.y += 0.3;
 
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
 
 	render();
 	controls.update();
 	//nextTweet.update();
-
 	window.requestAnimationFrame( loop );
 	
 }
-
 
 //similar to dropPin
 function tweetTwits( location ){
@@ -361,10 +353,6 @@ function fetchTweetsAddress(){
 
 
 function locateWithGoogleMaps( text ){	
-
-	//  We also need to be wary of exceeding Google’s rate limiting.
-	//  But Google seems to be much more forgiving than Twitter.
-	//  If you want to be a good citizen you should sign up for a free 
 	//  API key and include that key in your HTML file. How? See here:
 	//  https://developers.google.com/maps/documentation/javascript/tutorial
 
@@ -416,39 +404,29 @@ function nextTweet(){
 
 		textGroup.add( tweetTwits(
 		 	tweetsAddress[ tweetsIndex ]
-		 	//tweets[ tweetsIndex ].latitude
+
 		));
-
-
-		
 
 		textGroup.updateMatrix();
 
+
+
 		//setTimeout ( THREE.SceneUtils.traverseHierarchy( object, function ( object ) { object.visible = false; } );)
 
-		
-
-		//  I’m trying to be very mindful of Twitter’s rate limiting.
-		//  Let’s only try fetching more tweets only when we’ve exhausted our
-		//  tweets[] array supply.
-		//  But leave this commented out when testing!
-
-		//if( tweetsIndex === tweets.length - 1 ) fetchTweets()
+		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}	
 
 	//setTimeout(scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
 	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
 	//setInterval(temporaryEraser, 2000);
+
 	setTimeout( nextTweet, 3000 );
+	//	setTimeout( scene.scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
 	//scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] ));
 		 	//tweets[ tweetsIndex ].latitude));
-
+	//scene.tweetTwits(tweetsAddress[ tweetsIndex ]).remove()
 }
 
-function temporaryEraser( ){
-	 scene.remove( twitterContents);
- 	 setTimeout( temporaryEraser, 3500 );
-}
 // function nextTweetsAddress(){
 // 	if (tweetsAddressIndex + 1 < tweetsAddress.length){
 // 		tweetsAddress ++;
@@ -459,11 +437,7 @@ function temporaryEraser( ){
 // 		));
 
 // 	}
-// 	setTimeout( nextTweet, timePerTweet )
-// 	console.log("set time out")
-// }
-
-
+ 
 
 function exportTweets(){
 
@@ -537,13 +511,18 @@ function setupThree(){
 	var
 	WIDTH      = window.innerWidth,
 	HEIGHT     = window.innerHeight,
-	VIEW_ANGLE = 45,
+	VIEW_ANGLE = 45,   //should be between 0 and 180. really small number can behave as a zoom lens. larger number behave like a IMAX lens
 	ASPECT     = WIDTH / HEIGHT,
-	NEAR       = 0.1,
-	FAR        = 6000;
+	NEAR       = 0.1, 	//usually default value is 0.1
+	FAR        = 6000; //because we don't have to render something too far away that is not even visible
+						// there is no limitation when it comes to far value. but the farther, the more processing
+						// usually 1000 to million
 
 
 	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
+	//orthographic camera trial
+	//window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
+	
 	camera.position.set(0,0, 300 )
 	camera.lookAt( scene.position )
 	scene.add( camera )
@@ -597,10 +576,15 @@ function addLights(){
 	var ambient, directional;
 
 	ambient = new THREE.AmbientLight( 0xBBBBBB )
+	// ambient light: has a position parameter but doesn't really matter. think as the sun.
+	// it's good for making as a baseline light to everything look visible
 	scene.add( ambient )	
 
 	// Now let's create a Directional light as our pretend sunshine.
 	// Directional light has an infinite source.
+
+	//directional light does not have a particular position. (not an one source.)
+	//just pushing to one direction and everything starts to illuminate. think as a plane reflector on video shooting
 
 	directional = new THREE.DirectionalLight( 0xCCCCCC )
 	directional.castShadow = true;
@@ -619,8 +603,17 @@ function addLights(){
 	directional.shadowMapWidth      = directional.shadowMapHeight = 2048
 	//directional.shadowCameraVisible = true
 
-
+	// orthographic camera : losing the depth but there's no skew(oblique angle)
+	//
 	//references
-	//point light: emanate from a particular position in all directions,
+	//point light: emanate from a particular position in all directions. most realistic. think about a bare bulb
+	// not directional. more like all direction
 	//regardless of all positions
+
 }	// spotlight: emanate from a partlcular position and in a specific directions
+	//has a point source position and target position.
+
+
+	//vector has magnititude: hw far it can travel1
+
+	//matt texture: if there's low specular area and high scattering, it will look like a matt texture
