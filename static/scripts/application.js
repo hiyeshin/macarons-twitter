@@ -1,21 +1,30 @@
 /////////////////////////////////////////////
 ////////////Macarons Earth ver 2.0////////////
 /////////////////////////////////////////////
+// inspiration
 // http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
+// things to be done immediately:
+// 1. introduction to keyboard keys
+// 2. appropriate font
+// 3. fixing duplicate geolocation
+
 // Stewart's suggestions:
-		//  1. Only shine the sun on the part of Earth that is actually
-		//     currently experience daylight!
 		//  2. Rotate the globe to face the tweet you’re plotting.
 		//  3. Don’t just place the pin, but animate its appearance;
 		//     maybe it grows out of the Earth?
 		
-
-		//mark's suggestion: make the last text's opacity as 0
+		//mark's suggestion: make the last text's opacity as 0. 
+		// it works!
 
 	//functions to think about:
-	//lookat.OBJECT3D (facing only a certain point)
+	//lookat.OBJECT3D (facing only a certain point) for the pinpoint?
 
 	//sunlight would be nicer if I use point light? (source: webGL book)
+
+/**
+ * macarons model by mkl mkl 
+ * https://profiles.google.com/mmmklmail/about
+ */
 
 $( document ).ready( function(){
 
@@ -58,8 +67,8 @@ $( document ).ready( function(){
 
 /////////////2. "+" sign
 	window.plusSign = new THREE.Mesh(
-		new THREE.TextGeometry("at", {
-			size: 12, height: 5, curveSegments: 6, 
+		new THREE.TextGeometry("in", {
+			size: 10, height: 5, curveSegments: 6, 
 			font: "droid serif", 
 			weight: "normal", style: "normal" 
 		}),
@@ -68,27 +77,10 @@ $( document ).ready( function(){
 		})
 	)
 
-	plusSign.position.set (0,109,0);
+	plusSign.position.set (-5,110,0);
 	plusSign.receiveShadow = true;
 	plusSign.castShadow = true;
 	textGroup.add(plusSign);
-
-	//////////////3. "twitter"
-	// window.twitterLogo = new THREE.Mesh(
-	// 	new THREE.TextGeometry("twitter", {
-	// 		size: 10, height: 5, curveSegments: 6, 
-	// 		font: "droid sans", 
-	// 		weight: "normal", style: "normal" 
-	// 	}),
-	// 	new THREE.MeshPhongMaterial({ 
-	// 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
-	// 	})//Phong Material has a smooth, non-angular texture
-	// )
-
-	// twitterLogo.position.set (30,110,0);
-	// twitterLogo.receiveShadow = true;
-	// twitterLogo.castShadow = true;
-	// textGroup.add(twitterLogo);
 
 
 ///this is earth group
@@ -136,7 +128,7 @@ $( document ).ready( function(){
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 
-	earthGroup.rotation.x = 0.41
+	earthGroup.rotation.x = 0.41;
 
 	loop();
 
@@ -154,9 +146,9 @@ $( document ).ready( function(){
 	}
 
 	nextTweet();
-	//nextTweetsAddress();
 	console.log(tweetsAddress);
 })
+
 
 function loop(){
 
@@ -167,10 +159,10 @@ function loop(){
 
 	render();
 	controls.update();
-	//nextTweet.update();
 	window.requestAnimationFrame( loop );
 	
 }
+
 
 //similar to dropPin
 function tweetTwits( location ){
@@ -184,12 +176,11 @@ function tweetTwits( location ){
 	 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide, opacity: 1.0
 	 	}));
 
-	 	twitterContents.position.set (30,110,0);
+	 	twitterContents.position.set (25,109,0);
 		twitterContents.receiveShadow = true;
 		twitterContents.castShadow = true;
 		textGroup.add(twitterContents);
-		// setTimeout(twitterContents.materials.opacity = 0.0, 2000)
-		//setInterval(3000);
+
 }
 
 
@@ -296,9 +287,6 @@ function fetchTweets(){
 				else if( tweet.location ){
 
 					console.log( 'At least the name of the location found. will try Google Maps for:' )
-					// tweetsAddress.push( (tweet.location).toString() );
-					//tweetsAddress.push(tweet.location);
-					//console.log(tweetsAddress);
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.location )
 					}, i * timePerTweet.divide(2).round() )
@@ -307,7 +295,6 @@ function fetchTweets(){
 
 					console.log( 'Non-English data: Resorting to the ISO language code as last hope:' )
 					console.log( tweet.iso_language_code )
-					//tweets.push ( tweet.iso_language_code )
 					setTimeout( function(){
 						locateWithGoogleMaps( tweet.iso_language_code )
 					}, i * timePerTweet.divide(2).round() )
@@ -327,7 +314,6 @@ function fetchTweets(){
 
 function fetchTweetsAddress(){
 
-	//console.log( '\n\nFetching fresh tweets from Twitter.' )
 	$.ajax({
 		url:"http://search.twitter.com/search.json?q=macaron&geocode=0,0,6400km",
 
@@ -407,14 +393,12 @@ function nextTweet(){
 		 	tweetsAddress[ tweetsIndex ]
 
 		))
-	//	setTimeout((tweetTwits(materials.opacity = 0.0)), 2000);
-////////////////////////////////////////MAYBE SOMEWHERE IN THIS
-//since tweetsAddress is not working correctly
-/////////////		setTimeout( scene.remove(tweetTwits[ tweetsIndex ] ), 2000);
+	
+///////////// setTimeout( scene.remove(tweetTwits[ tweetsIndex ] ), 2000);
 
 		textGroup.updateMatrix();
 
-		if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
+		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}	
 
 
@@ -422,11 +406,9 @@ function nextTweet(){
 	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
 	setTimeout( fadeOut, 2500 );
 	setTimeout( nextTweet, 3000 );
-	//setTimeout( scene.remove(tweetTwits[ tweetsIndex ] ), 2000);
 	//scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] ));
-		 	//tweets[ tweetsIndex ].latitude));
-	//scene.tweetTwits(tweetsAddress[ tweetsIndex ]).remove()
 }
+
 
 function fadeOut(){
 	twitterContents.material.opacity = 0.0;
@@ -464,21 +446,21 @@ function importTweets(){
 
 
 
- function exportTweetsAddress(){
- 	var dataAddress = 'databaseAddress = databaseADdress.concat(['
- 	tweetsAddress.forEach(function(tweet, i){
- 		dataAddress += '\n {'
- 		dataAddress += '\n location: ' + tweet.tweetAddress
- 		dataAddress += '\n }'
- 		if (i < tweetsAddress.length -1 ) dataAddress += ','
- 	})
- 	dataAddress += '\n])'
-	console.log (dataAddress)
- }
+ // function exportTweetsAddress(){
+ // 	var dataAddress = 'databaseAddress = databaseADdress.concat(['
+ // 	tweetsAddress.forEach(function(tweet, i){
+ // 		dataAddress += '\n {'
+ // 		dataAddress += '\n location: ' + tweet.tweetAddress
+ // 		dataAddress += '\n }'
+ // 		if (i < tweetsAddress.length -1 ) dataAddress += ','
+ // 	})
+ // 	dataAddress += '\n])'
+	// console.log (dataAddress)
+ // }
 
- function importTweetsAddress(){
- 	tweetsAddress = tweetsAddress.concat(databaseAddress);
- }
+ // function importTweetsAddress(){
+ // 	tweetsAddress = tweetsAddress.concat(databaseAddress);
+ // }
 
 
 
@@ -498,6 +480,7 @@ function surfacePlot( params ){
 
 	return new THREE.Vector3( x, y, z );
 }
+
 
 function setupThree(){
 	window.scene = new THREE.Scene();

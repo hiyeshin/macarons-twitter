@@ -1,3 +1,7 @@
+/**
+ * macarons model by mkl mkl 
+ * https://profiles.google.com/mmmklmail/about
+ */
 //macarons models were found on the site below:
 //http://sketchup.google.com/3dwarehouse/details?mid=f4dd41e502bea71db6fb0dc079377ea1&ct=mdrm
 
@@ -47,8 +51,6 @@
 	// })
 
 	
-
-
 	//Let's draw moon
 	// window.moonRadius = 15;
 	// window.moon = new THREE.Mesh(
