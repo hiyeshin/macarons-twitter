@@ -414,7 +414,7 @@ function nextTweet(){
 
 		textGroup.updateMatrix();
 
-		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
+		if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}	
 
 
@@ -431,18 +431,6 @@ function nextTweet(){
 function fadeOut(){
 	twitterContents.material.opacity = 0.0;
 }
-
-// function nextTweetsAddress(){
-// 	if (tweetsAddressIndex + 1 < tweetsAddress.length){
-// 		tweetsAddress ++;
-
-// 		textGroup.add( tweetTwits(
-// 		 	tweetsAddress[ tweetsIndex ]
-// 		 	//tweets[ tweetsIndex ].latitude
-// 		));
-
-// 	}
-
  
 
 function exportTweets(){
