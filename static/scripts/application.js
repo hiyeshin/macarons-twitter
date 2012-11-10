@@ -174,20 +174,21 @@ function loop(){
 
 //similar to dropPin
 function tweetTwits( location ){
-		var twitterContents = new THREE.Mesh(
+		window.twitterContents = new THREE.Mesh(
 			new THREE.TextGeometry( location , {
 			size: 10, height: 5, curveSegments: 6, 
 	 		font: "droid sans", 
 	 		weight: "normal", style: "normal" 
 	 	}),
 	 	new THREE.MeshPhongMaterial({ 
-	 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide
+	 		color:0x45c4f6, wireframe: false, side: THREE.DoubleSide, opacity: 1.0
 	 	}));
 
 	 	twitterContents.position.set (30,110,0);
 		twitterContents.receiveShadow = true;
 		twitterContents.castShadow = true;
 		textGroup.add(twitterContents);
+		// setTimeout(twitterContents.materials.opacity = 0.0, 2000)
 		//setInterval(3000);
 }
 
@@ -405,26 +406,30 @@ function nextTweet(){
 		textGroup.add( tweetTwits(
 		 	tweetsAddress[ tweetsIndex ]
 
-		));
+		))
+	//	setTimeout((tweetTwits(materials.opacity = 0.0)), 2000);
+////////////////////////////////////////MAYBE SOMEWHERE IN THIS
+//since tweetsAddress is not working correctly
+/////////////		setTimeout( scene.remove(tweetTwits[ tweetsIndex ] ), 2000);
 
 		textGroup.updateMatrix();
-
-
-
-		//setTimeout ( THREE.SceneUtils.traverseHierarchy( object, function ( object ) { object.visible = false; } );)
 
 		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}	
 
-	//setTimeout(scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
-	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
-	//setInterval(temporaryEraser, 2000);
 
+	
+	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
+	setTimeout( fadeOut, 2500 );
 	setTimeout( nextTweet, 3000 );
-	//	setTimeout( scene.scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
+	//setTimeout( scene.remove(tweetTwits[ tweetsIndex ] ), 2000);
 	//scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] ));
 		 	//tweets[ tweetsIndex ].latitude));
 	//scene.tweetTwits(tweetsAddress[ tweetsIndex ]).remove()
+}
+
+function fadeOut(){
+	twitterContents.material.opacity = 0.0;
 }
 
 // function nextTweetsAddress(){
@@ -437,6 +442,7 @@ function nextTweet(){
 // 		));
 
 // 	}
+
  
 
 function exportTweets(){
