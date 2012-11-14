@@ -26,6 +26,7 @@
  * https://profiles.google.com/mmmklmail/about
  */
 
+
 $( document ).ready( function(){
 
 	setupThree();
@@ -45,8 +46,12 @@ $( document ).ready( function(){
 
 /////Let's make a text group!!!//////////
 /////thanks mark for teach me how to create text in an easy way!///
-	window.textGroup = new THREE.Object3D();
-	textGroup.matrixAutoUpdate = false;
+	window.textGroup1 = new THREE.Object3D();
+	textGroup1.matrixAutoUpdate = false;
+
+
+	window.textGroup2 = new THREE.Object3D();
+	//textGroup2.matrixAutoUpdate = false;
 
 //////////1. twitter search word: currently macarons ///////////////////
 	window.twitterWord = new THREE.Mesh(
@@ -63,7 +68,7 @@ $( document ).ready( function(){
 	twitterWord.position.set (-90,110,0);
 	twitterWord.receiveShadow = true;
 	twitterWord.castShadow = true;
-	textGroup.add(twitterWord);
+	textGroup1.add(twitterWord);
 
 /////////////2. "+" sign
 	window.plusSign = new THREE.Mesh(
@@ -80,7 +85,8 @@ $( document ).ready( function(){
 	plusSign.position.set (-5,110,0);
 	plusSign.receiveShadow = true;
 	plusSign.castShadow = true;
-	textGroup.add(plusSign);
+	textGroup1.add(plusSign);
+
 
 
 ///this is earth group
@@ -124,7 +130,8 @@ $( document ).ready( function(){
 	window.moonGroup = new THREE.Object3D()
 	moonGroup.rotation.x = ( 10 ).degreesToRadians()
 
-	scene.add( textGroup );
+	scene.add( textGroup1 );
+	scene.add( textGroup2 );
 	scene.add( earthGroup );
 	scene.add( moonGroup );
 
@@ -152,10 +159,12 @@ $( document ).ready( function(){
 
 function loop(){
 
-	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians()
-	clouds.rotation.y += ( 0.05 ).degreesToRadians()
+	earthGroup.rotation.y  += ( 0.10 ).degreesToRadians();
+	clouds.rotation.y += ( 0.05 ).degreesToRadians();
 
-	moonGroup.rotation.y += ( 0.2 ).degreesToRadians()
+	moonGroup.rotation.y += ( 0.2 ).degreesToRadians();
+
+	textGroup2.position.z -= 0.33;
 
 	render();
 	controls.update();
@@ -179,7 +188,10 @@ function tweetTwits( location ){
 	 	twitterContents.position.set (25,109,0);
 		twitterContents.receiveShadow = true;
 		twitterContents.castShadow = true;
-		textGroup.add(twitterContents);
+
+		twitterContents.position.z = textGroup2.position.z * -1
+
+		textGroup2.add(twitterContents);
 
 }
 
@@ -389,29 +401,35 @@ function nextTweet(){
 			0x8df5cc
 		));
 
-		textGroup.add( tweetTwits(
+		textGroup2.add( tweetTwits(
 		 	tweetsAddress[ tweetsIndex ]
 
 		))
-	
-///////////// setTimeout( scene.remove(tweetTwits[ tweetsIndex ] ), 2000);
+		
+		timeMachine([tweetsIndex]);
 
-		textGroup.updateMatrix();
+		textGroup2.updateMatrix();
 
 		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
-	}	
+	}
+
+
 
 
 	
 	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
-	setTimeout( fadeOut, 2500 );
-	setTimeout( nextTweet, 3000 );
+	setTimeout( fadeOut, 3500 );
+	setTimeout( nextTweet, 3500 );
 	//scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] ));
 }
 
 
 function fadeOut(){
-	twitterContents.material.opacity = 0.0;
+	twitterContents.material.opacity = 0.25;
+}
+
+function timeMachine(retro){
+	twitterContents.position.z -= - (15 * retro) ;
 }
  
 
@@ -594,3 +612,5 @@ function addLights(){
 	//vector has magnititude: hw far it can travel1
 
 	//matt texture: if there's low specular area and high scattering, it will look like a matt texture
+
+	

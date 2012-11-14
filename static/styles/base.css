@@ -8,8 +8,27 @@ body
 	overflow: hidden;
 	
 }
-footer
-{	position: absolute;
+
+h3{
+
+	top: 100px; 
+	width: 100%;
+	color: #ffffff;
+	padding: 38px;
+				
+	text-align:left;
+
+	font-family: "Mrs Eaves OT", Georgia, Times, serif;
+	/*font-family: "Courier", serif;*/
+	font-size:   24px;
+	/*font-style: italic;*/
+	font-weight: bold;
+
+	color: #ffffff;
+}
+
+footer{	
+	position: absolute;
 	font-family: "Mrs Eaves OT", Georgia, Times, serif;
 	/*font-family: "Courier", serif;*/
 	font-size:   24px;
@@ -25,6 +44,8 @@ footer
 	z-index:1000;
 
 }
+
+
 
 a: link{	
 	font-size:   28px;
