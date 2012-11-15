@@ -2,7 +2,6 @@
 ////////////Macarons Earth ver 2.0////////////
 /////////////////////////////////////////////
 // inspiration
-// http://www.adverblog.com/2011/11/29/webgl-twitter-visualizer-holographic-installation/
 // things to be done immediately:
 // 1. introduction to keyboard keys
 // 2. appropriate font
@@ -12,9 +11,6 @@
 		//  2. Rotate the globe to face the tweet you’re plotting.
 		//  3. Don’t just place the pin, but animate its appearance;
 		//     maybe it grows out of the Earth?
-		
-		//mark's suggestion: make the last text's opacity as 0. 
-		// it works!
 
 	//functions to think about:
 	//lookat.OBJECT3D (facing only a certain point) for the pinpoint?
@@ -41,17 +37,15 @@ $( document ).ready( function(){
 	window.tweetsIndex = -1; //what does it mean?
 	window.tweetsAddressIndex = -1;
 
-	window.timePerTweet = (3).seconds(); //setInterval(seconds)
+	window.timePerTweet = (3).seconds(); 
 	window.tweetApiArmed = true ; //if it's FALSE, we will only play with data.js file.
 
 /////Let's make a text group!!!//////////
-/////thanks mark for teach me how to create text in an easy way!///
 	window.textGroup1 = new THREE.Object3D();
 	textGroup1.matrixAutoUpdate = false;
 
-
 	window.textGroup2 = new THREE.Object3D();
-	//textGroup2.matrixAutoUpdate = false;
+
 
 //////////1. twitter search word: currently macarons ///////////////////
 	window.twitterWord = new THREE.Mesh(
@@ -65,7 +59,7 @@ $( document ).ready( function(){
 		})
 	)
 
-	twitterWord.position.set (-90,110,0);
+	twitterWord.position.set ( -90,110,0 );
 	twitterWord.receiveShadow = true;
 	twitterWord.castShadow = true;
 	textGroup1.add(twitterWord);
@@ -86,7 +80,6 @@ $( document ).ready( function(){
 	plusSign.receiveShadow = true;
 	plusSign.castShadow = true;
 	textGroup1.add(plusSign);
-
 
 
 ///this is earth group
@@ -164,7 +157,7 @@ function loop(){
 
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians();
 
-	textGroup2.position.z -= 0.33;
+	textGroup2.position.z -= 0.53;
 
 	render();
 	controls.update();
@@ -256,7 +249,7 @@ function render(){
 	renderer.autoClear = false;
 	renderer.clear();
 
-	renderer.render(bgScene,bgCam);
+	renderer.render( sceneCube, cameraCube );
 	renderer.render( scene, camera );
 
 }
@@ -413,14 +406,8 @@ function nextTweet(){
 		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}
 
-
-
-
-	
-	//setTimeout( scene.remove( tweetTwits(tweetsAddress[ tweetsIndex ] )), 2000);
 	setTimeout( fadeOut, 3500 );
 	setTimeout( nextTweet, 3500 );
-	//scene.remove(tweetTwits(tweetsAddress[ tweetsIndex ] ));
 }
 
 
@@ -459,29 +446,6 @@ function importTweets(){
 	tweets = tweets.concat(database);
 }
 
- // I'll leave this in for the moment for reference, but it seems to be
- // having some issues ...
-
-
-
- // function exportTweetsAddress(){
- // 	var dataAddress = 'databaseAddress = databaseADdress.concat(['
- // 	tweetsAddress.forEach(function(tweet, i){
- // 		dataAddress += '\n {'
- // 		dataAddress += '\n location: ' + tweet.tweetAddress
- // 		dataAddress += '\n }'
- // 		if (i < tweetsAddress.length -1 ) dataAddress += ','
- // 	})
- // 	dataAddress += '\n])'
-	// console.log (dataAddress)
- // }
-
- // function importTweetsAddress(){
- // 	tweetsAddress = tweetsAddress.concat(databaseAddress);
- // }
-
-
-
 
 function surfacePlot( params ){
 
@@ -502,11 +466,12 @@ function surfacePlot( params ){
 
 function setupThree(){
 	window.scene = new THREE.Scene();
+	window.sceneCube = new THREE.Scene(); 
 
 	var
 	WIDTH      = window.innerWidth,
 	HEIGHT     = window.innerHeight,
-	VIEW_ANGLE = 45,   //should be between 0 and 180. really small number can behave as a zoom lens. larger number behave like a IMAX lens
+	VIEW_ANGLE = 30,   //should be between 0 and 180. really small number can behave as a zoom lens. larger number behave like a IMAX lens
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1, 	//usually default value is 0.1
 	FAR        = 6000; //because we don't have to render something too far away that is not even visible
@@ -519,30 +484,52 @@ function setupThree(){
 	//window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
 	
 	camera.position.set(0,0, 300 )
-	camera.lookAt( scene.position )
-	scene.add( camera )
+	camera.lookAt( scene.position )/////I can use this function later
+	scene.add( camera );
 
-	window.bg = new THREE.Mesh(
-		new THREE.PlaneGeometry(2,2,0),
-		new THREE.MeshBasicMaterial({
-			map: THREE.ImageUtils.loadTexture( 'media/starfieldwide.png' )
+	// window.bg = new THREE.Mesh(
+	// 	new THREE.PlaneGeometry(2,2,0),
+	// 	new THREE.MeshBasicMaterial({
+	// 		map: THREE.ImageUtils.loadTexture( 'media/starfieldwide.png' )
+	// 	})
+	// );
+
+	// bg.material.depthTest = false;
+	// bg.material.depthWrite = false;
+
+	// window.bgScene = new THREE.Scene();
+	// window.bgCam = new THREE.Camera();
+	// bgScene.add(bgCam);
+	// bgScene.add(bg);
+	////////////////////////////////////////////
+	///////////skybod trial//////////////////////
+	
+	window.cameraCube = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+
+	window.shader = THREE.ShaderUtils.lib[ "cube" ];
+	shader.uniforms["tCube"].value = THREE.ImageUtils.loadTextureCube( [
+		'media/starfieldwide.png', 'media/starfieldwide.png', 
+		'media/starfieldwide.png', 'media/starfieldwide.png', 
+		'media/starfieldwide.png', 'media/starfieldwide.png']);
+
+	window.skyCube = new THREE.Mesh(
+		new THREE.CubeGeometry( 100,100,100 ),
+		new THREE.ShaderMaterial({
+			fragmentShader: shader.fragmentShader,
+			vertexShader: shader.vertexShader,
+			uniforms: shader.uniforms,
+			depthWrite: false,
+			side: THREE.BackSide
 		})
-	);
+	)
+	sceneCube.add( skyCube );
 
-	bg.material.depthTest = false;
-	bg.material.depthWrite = false;
-
-	window.bgScene = new THREE.Scene();
-	window.bgCam = new THREE.Camera();
-	bgScene.add(bgCam);
-	bgScene.add(bg);
 
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
 	renderer.setSize( window.innerWidth, window.innerHeight )
 	renderer.shadowMapEnabled = true
 	renderer.shadowMapSoft = true
 
-	//  document.getElementById( 'three' ).appendChild( renderer.domElement )
 	$( '#three' ).append( renderer.domElement )
 
 }
