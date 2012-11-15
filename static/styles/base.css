@@ -1,41 +1,45 @@
 
 body
 {
-	margin: 0;
-	
-	font-size:   12px;
-	line-height: 20px;
+
+	margin: 0px;
+	background: #000000;
+	color: #ffffff;
+	font-size:   8px;
+	/*line-height: 20px;*/
 	overflow: hidden;
 	
 }
 
-h3{
+h6{
 
-	top: 100px; 
+	top: 0px; 
 	width: 100%;
 	color: #ffffff;
-	padding: 38px;
-				
+	margin: 8px;
+	padding: -10px;				
 	text-align:left;
 
 	font-family: "Mrs Eaves OT", Georgia, Times, serif;
 	/*font-family: "Courier", serif;*/
-	font-size:   24px;
+	font-size:   14px;
 	/*font-style: italic;*/
 	font-weight: bold;
-
 	color: #ffffff;
 }
 
 footer{	
+
 	position: absolute;
 	font-family: "Mrs Eaves OT", Georgia, Times, serif;
 	/*font-family: "Courier", serif;*/
-	font-size:   24px;
+	font-size:   20px;
+	line-height: 16px;
 	/*font-style: italic;*/
 	font-weight: bold;
 	
-	top: 643px; 
+	/*top: 643px; */
+	top: 643px;
 	width: 100%;
 	color: #ffffff;
 	padding: 38px;

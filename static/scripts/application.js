@@ -17,6 +17,10 @@
 
 	//sunlight would be nicer if I use point light? (source: webGL book)
 
+	// popup alert for instruction
+	// mousehover
+
+
 /**
  * macarons model by mkl mkl 
  * https://profiles.google.com/mmmklmail/about
@@ -157,7 +161,7 @@ function loop(){
 
 	moonGroup.rotation.y += ( 0.2 ).degreesToRadians();
 
-	textGroup2.position.z -= 0.53;
+	textGroup2.position.z -= 0.7;
 
 	render();
 	controls.update();
@@ -249,7 +253,8 @@ function render(){
 	renderer.autoClear = false;
 	renderer.clear();
 
-	renderer.render( sceneCube, cameraCube );
+	//renderer.render( sceneCube, cameraCube );
+	renderer.render( bgScene, bgCam );
 	renderer.render( scene, camera );
 
 }
@@ -398,8 +403,6 @@ function nextTweet(){
 		 	tweetsAddress[ tweetsIndex ]
 
 		))
-		
-		timeMachine([tweetsIndex]);
 
 		textGroup2.updateMatrix();
 
@@ -407,16 +410,12 @@ function nextTweet(){
 	}
 
 	setTimeout( fadeOut, 3500 );
-	setTimeout( nextTweet, 3500 );
+//	setTimeout( nextTweet, 3500 );
 }
 
 
 function fadeOut(){
 	twitterContents.material.opacity = 0.25;
-}
-
-function timeMachine(retro){
-	twitterContents.position.z -= - (15 * retro) ;
 }
  
 
@@ -466,12 +465,12 @@ function surfacePlot( params ){
 
 function setupThree(){
 	window.scene = new THREE.Scene();
-	window.sceneCube = new THREE.Scene(); 
+//	window.sceneCube = new THREE.Scene(); 
 
 	var
 	WIDTH      = window.innerWidth,
 	HEIGHT     = window.innerHeight,
-	VIEW_ANGLE = 30,   //should be between 0 and 180. really small number can behave as a zoom lens. larger number behave like a IMAX lens
+	VIEW_ANGLE = 55,   //should be between 0 and 180. really small number can behave as a zoom lens. larger number behave like a IMAX lens
 	ASPECT     = WIDTH / HEIGHT,
 	NEAR       = 0.1, 	//usually default value is 0.1
 	FAR        = 6000; //because we don't have to render something too far away that is not even visible
@@ -483,46 +482,46 @@ function setupThree(){
 	//orthographic camera trial
 	//window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
 	
-	camera.position.set(0,0, 300 )
+	camera.position.set(0, 130, 300 )
 	camera.lookAt( scene.position )/////I can use this function later
 	scene.add( camera );
 
-	// window.bg = new THREE.Mesh(
-	// 	new THREE.PlaneGeometry(2,2,0),
-	// 	new THREE.MeshBasicMaterial({
-	// 		map: THREE.ImageUtils.loadTexture( 'media/starfieldwide.png' )
-	// 	})
-	// );
+	window.bg = new THREE.Mesh(
+		new THREE.PlaneGeometry(2,2,0),
+		new THREE.MeshBasicMaterial({
+			map: THREE.ImageUtils.loadTexture( 'media/starfieldwide.png' )
+		})
+	);
 
-	// bg.material.depthTest = false;
-	// bg.material.depthWrite = false;
+	bg.material.depthTest = false;
+	bg.material.depthWrite = false;
 
-	// window.bgScene = new THREE.Scene();
-	// window.bgCam = new THREE.Camera();
-	// bgScene.add(bgCam);
-	// bgScene.add(bg);
+	window.bgScene = new THREE.Scene();
+	window.bgCam = new THREE.Camera();
+	bgScene.add(bgCam);
+	bgScene.add(bg);
 	////////////////////////////////////////////
 	///////////skybod trial//////////////////////
 	
-	window.cameraCube = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+	// window.cameraCube = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 
-	window.shader = THREE.ShaderUtils.lib[ "cube" ];
-	shader.uniforms["tCube"].value = THREE.ImageUtils.loadTextureCube( [
-		'media/starfieldwide.png', 'media/starfieldwide.png', 
-		'media/starfieldwide.png', 'media/starfieldwide.png', 
-		'media/starfieldwide.png', 'media/starfieldwide.png']);
+	// window.shader = THREE.ShaderUtils.lib[ "cube" ];
+	// shader.uniforms["tCube"].value = THREE.ImageUtils.loadTextureCube( [
+	// 	'media/starfieldwide.png', 'media/starfieldwide.png', 
+	// 	'media/starfieldwide.png', 'media/starfieldwide.png', 
+	// 	'media/starfieldwide.png', 'media/starfieldwide.png']);
 
-	window.skyCube = new THREE.Mesh(
-		new THREE.CubeGeometry( 100,100,100 ),
-		new THREE.ShaderMaterial({
-			fragmentShader: shader.fragmentShader,
-			vertexShader: shader.vertexShader,
-			uniforms: shader.uniforms,
-			depthWrite: false,
-			side: THREE.BackSide
-		})
-	)
-	sceneCube.add( skyCube );
+	// window.skyCube = new THREE.Mesh(
+	// 	new THREE.CubeGeometry( 100,100,100 ),
+	// 	new THREE.ShaderMaterial({
+	// 		fragmentShader: shader.fragmentShader,
+	// 		vertexShader: shader.vertexShader,
+	// 		uniforms: shader.uniforms,
+	// 		depthWrite: false,
+	// 		side: THREE.BackSide
+	// 	})
+	// )
+	// sceneCube.add( skyCube );
 
 
 	window.renderer = new THREE.WebGLRenderer({ antialias: true })
