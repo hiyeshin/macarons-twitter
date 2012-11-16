@@ -399,18 +399,20 @@ function nextTweet(){
 			0x8df5cc
 		));
 
-		textGroup2.add( tweetTwits(
-		 	tweetsAddress[ tweetsIndex ]
+		// textGroup2.add( tweetTwits(
+		//  	tweetsAddress[ tweetsIndex ]
 
-		))
+		// ))
 
-		textGroup2.updateMatrix();
+		addVanilla();
 
-		//if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
+		//textGroup2.updateMatrix();
+
+		if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}
 
 	setTimeout( fadeOut, 3500 );
-//	setTimeout( nextTweet, 3500 );
+	setTimeout( nextTweet, 3500 );
 }
 
 
@@ -418,6 +420,38 @@ function fadeOut(){
 	twitterContents.material.opacity = 0.25;
 }
  
+
+function addVanilla(){
+	var vanilla;
+
+	var loader2 = new THREE.ColladaLoader();
+	loader2.load( 'models/vanilla_big.dae', function( collada ){
+		window.vanilla = collada.scene;
+		vanilla.scale.x = vanilla.scale.y = vanilla.scale.z = Math.random() * 3 + 1;
+		// vanilla.position.x = Math.random() * 1000 - 500;
+		vanilla.position.x = 100; // * tweetsIndex;
+		vanilla.position.y = -125;
+		vanilla.position.z = -300;
+		vanilla.rotation.y = 50;
+		vanilla.updateMatrix();
+
+		console.log(vanilla.position.x);
+
+		window.macaronsShadow = new THREE.SceneUtils.traverseHierarchy ( vanilla, function (child) {
+			child.castShadow = true;
+			child.receiveShadow = true;
+		});
+		
+		//scene.add( vanilla );
+		console.log( "new vanilla macarons at" + vanilla.position.x );
+	});
+
+
+	scene.add( vanilla );
+	
+	console.log( "new vanilla macarons added at" + vanilla.position.x );
+
+}
 
 function exportTweets(){
 
@@ -478,9 +512,9 @@ function setupThree(){
 						// usually 1000 to million
 
 
-	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
+	//window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
 	//orthographic camera trial
-	//window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
+	window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
 	
 	camera.position.set(0, 130, 300 )
 	camera.lookAt( scene.position )/////I can use this function later
@@ -501,7 +535,7 @@ function setupThree(){
 	bgScene.add(bgCam);
 	bgScene.add(bg);
 	////////////////////////////////////////////
-	///////////skybod trial//////////////////////
+	///////////skybox trial//////////////////////
 	
 	// window.cameraCube = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 
