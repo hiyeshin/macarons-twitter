@@ -399,14 +399,14 @@ function nextTweet(){
 			0x8df5cc
 		));
 
-		// textGroup2.add( tweetTwits(
-		//  	tweetsAddress[ tweetsIndex ]
+		textGroup2.add( tweetTwits(
+		 	tweetsAddress[ tweetsIndex ]
 
-		// ))
+		))
 
-		addVanilla();
+		//addVanilla();
 
-		//textGroup2.updateMatrix();
+		textGroup2.updateMatrix();
 
 		if( tweetsIndex === tweets.length - 1 ) fetchTweets() // Let’s only try fetching more tweets only when we’ve exhausted ou tweets[] array supply.
 	}

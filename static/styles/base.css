@@ -33,13 +33,14 @@ footer{
 	position: absolute;
 	font-family: "Mrs Eaves OT", Georgia, Times, serif;
 	/*font-family: "Courier", serif;*/
-	font-size:   20px;
-	line-height: 16px;
+	font-size:   19px;
+	line-height: 15px;
 	/*font-style: italic;*/
 	font-weight: bold;
 	
 	/*top: 643px; */
-	top: 540px;
+	top: 550px;
+	/*top: height / 2;*/
 	width: 100%;
 	color: #ffffff;
 	padding: 38px;
@@ -53,6 +54,7 @@ footer{
 {	
 	font-family: "Avenir Lt std", Futura, sans-serif;
 	font-size: 18px ;
+	line-height: 16px;
 	color: #9ae7c7;	
 }
 
