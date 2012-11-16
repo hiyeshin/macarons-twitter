@@ -39,7 +39,7 @@ footer{
 	font-weight: bold;
 	
 	/*top: 643px; */
-	top: 560px;
+	top: 540px;
 	width: 100%;
 	color: #ffffff;
 	padding: 38px;
@@ -47,6 +47,13 @@ footer{
 	text-align:left;
 	z-index:1000;
 
+}
+
+#instruction
+{	
+	font-family: "Avenir Lt std", Futura, sans-serif;
+	font-size: 18px ;
+	color: #9ae7c7;	
 }
 
 
@@ -71,12 +78,8 @@ a: visited{	font-size:   28px;
 
 
 #three
-{
+{	
 	width: 100%;
 	height: 100%;
 }
 
-#instruction
-{
-	color: #9ae7c7;	
-}

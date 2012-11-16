@@ -512,9 +512,9 @@ function setupThree(){
 						// usually 1000 to million
 
 
-	//window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
+	window.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR )
 	//orthographic camera trial
-	window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
+	//window.camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 1000 );
 	
 	camera.position.set(0, 130, 300 )
 	camera.lookAt( scene.position )/////I can use this function later
